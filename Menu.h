@@ -53,7 +53,7 @@ MenuItem menuList[] = {
     {"Lau Thai Tomyum", 500000, true, 20},
     {"Lau Ca Duoi", 420000, true, 22},
     {"Banh Flan", 35000, true, 8},
-    {"Banh Bo", 45000, true, 12},
+    {"Banh Bo ", 45000, true, 12},
     {"Che Suong Sao", 50000, true, 6},
     {"Kem Vani", 40000, true, 5},
     {"Sua Chua", 40000, true, 4},
