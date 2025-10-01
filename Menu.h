@@ -63,12 +63,12 @@ int menuSize = sizeof(menuList) / sizeof(menuList[0]);
 void displayMenu()
 {
     cout << "\x1b[36m\n=========================== MENU ===========================\x1b[0m\n";
-    cout << "\x1b[35mNo\tFood Name\t\tPrice\tPrep(min)\tStatus\x1b[0m\n";
+    cout << "\x1b[35mNo\tFood Name\t\tPrice\t\tPrep(min)\tStatus\x1b[0m\n";
     for (int i = 0; i < menuSize; i++)
     {
         cout << "\x1b[33m" << i + 1 << ".\x1b[0m\t";
         cout << menuList[i].foodName << "\t\t";
-        cout << "\x1b[34m" << formatPrice(menuList[i].price) << "\x1b[0m\t";
+        cout << "\x1b[34m" << formatPrice(menuList[i].price) << "\x1b[0m\t\t";
         cout << menuList[i].prepTime << "\t\t";
         if (menuList[i].available)
             cout << "\x1b[32mAvailable\x1b[0m";
