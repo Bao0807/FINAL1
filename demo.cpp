@@ -1,13 +1,13 @@
 #include <iostream>
 #include "Functions.h"
 
-
+using namespace std;
 
 static void waitEnter()
 {
-    std::cout << "\nPress Enter to continue...";
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    std::cin.get();
+    cout << "\nPress Enter to continue...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.get();
 }
 
 int main()
@@ -21,15 +21,15 @@ int main()
     {
         clearScreen();
 
-        std::cout << "\n===== RESTAURANT =====\n";
-        std::cout << "1. Quan ly du lieu (Add & Display)\n";
-        std::cout << "2. Tien do don:\n";
-        std::cout << "3. Tim kiem theo so ban\n";
-        std::cout << "4. Doanh thu & so luong\n";
-        std::cout << "5. Thanh toan (hoi so ban -> chon hinh thuc)\n";
-        std::cout << "0. EXIT\n";
-        std::cout << "Choice: ";
-        std::cin >> choice;
+        cout << "\n===== RESTAURANT =====\n";
+        cout << "1. Quan ly du lieu (Add & Display)\n";
+        cout << "2. Tien do don:\n";
+        cout << "3. Tim kiem theo so ban\n";
+        cout << "4. Doanh thu & so luong\n";
+        cout << "5. Thanh toan (hoi so ban -> chon hinh thuc)\n";
+        cout << "0. EXIT\n";
+        cout << "Choice: ";
+        cin >> choice;
 
         // Clear screen again so mỗi thao tác được hiển thị trên màn hình sạch
         clearScreen();
@@ -43,25 +43,15 @@ int main()
         }
         case 2:
         {
-            std::cout << "Enter minutes to advance: ";
-            int m;
-            std::cin >> m;
-            advanceTime(q, m);
-            for (int i = 0; i < q.count; i++)
-            {
-                int idx = (q.front + i) % MAX;
-                writeProgressTxt(q.orders[idx]);
-            }
-            snapshotReadyOrdersToBill(q);
-            std::cout << "Advanced " << m << " minutes.\n";
+            // Hiển thị toàn bộ đơn trong queue (tiến độ, trạng thái, items)
             displayAll(q);
             break;
         }
         case 3:
         {
-            std::cout << "Enter table number: ";
+            cout << "Enter table number: ";
             int tb;
-            std::cin >> tb;
+            cin >> tb;
             searchByTable(q, tb);
             break;
         }
@@ -77,17 +67,16 @@ int main()
         }
         case 0:
         {
-            std::cout << "Exit.\n";
+            cout << "Exit.\n";
             break;
         }
         default:
-            std::cout << "Invalid.\n";
+            cout << "Invalid.\n";
         }
 
         if (choice != 0)
             waitEnter();
 
     } while (choice != 0);
-
     return 0;
 }

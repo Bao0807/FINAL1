@@ -86,3 +86,25 @@ OrderID: 6 | Customer: bao | Table: 3 | Status: Cooking
 OrderID: 6 | Customer: bao | Table: 3 | Status: Cooking
  - Banh Xeo x4 [wait] remaining=56m
 -------------------------------------
+OrderID: 6 | Customer: bao | Table: 1 | Status: Cooking
+ - Pho Ha Noi x4 [wait] remaining=48m
+-------------------------------------
+OrderID: 6 | Customer: bao | Table: 1 | Status: Cooking
+ - Pho Ha Noi x4 [wait] remaining=48m
+-------------------------------------
+OrderID: 7 | Customer: bao | Table: 3 | Status: Cooking
+-------------------------------------
+OrderID: 7 | Customer: bao | Table: 3 | Status: Cooking
+-------------------------------------
+OrderID: 7 | Customer: v | Table: 2 | Status: Cooking
+ - Pho Ha Noi x2 [wait] remaining=24m
+-------------------------------------
+OrderID: 7 | Customer: v | Table: 2 | Status: Cooking
+ - Pho Ha Noi x2 [cook] remaining=23m
+-------------------------------------
+OrderID: 7 | Customer: bao | Table: 3 | Status: Cooking
+ - Com Tam Sai Gon x2 [cook] remaining=18m
+-------------------------------------
+OrderID: 8 | Customer: bao | Table: 2 | Status: Cooking
+ - Com Tam Sai Gon x2 [cook] remaining=15m
+-------------------------------------

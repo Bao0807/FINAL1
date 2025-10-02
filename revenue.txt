@@ -3,3 +3,4 @@ OrderID: 2 | Total: 240000 | Items: Pho Kho Gia Laix2
 OrderID: 3 | Total: 240000 | Items: Pho Kho Gia Laix2
 OrderID: 4 | Total: 360000 | Items: Pho Ha Noix3
 OrderID: 5 | Total: 260000 | Items: Com Tam Sai Gonx2
+OrderID: 6 | Total: 480000 | Items: Pho Ha Noix4

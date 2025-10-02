@@ -11,7 +11,7 @@ struct MenuItem
     string foodName;
     long long price; // VND
     bool available;
-    int prepTime; // minutes for one portion
+    int prepTime; // second for one portion
 };
 
 extern MenuItem menuList[];
