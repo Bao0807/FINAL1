@@ -1,0 +1,88 @@
+OrderID: 1 | Customer: bao | Table: 2 | Status: Cooking
+ - Lau Ca Duoi x3 [wait] remaining=66m
+ - Lau Ca Duoi x4 [wait] remaining=88m
+-------------------------------------
+OrderID: 2 | Customer: bao | Table: 2 | Status: Cooking
+ - Pho Ha Noi x2 [wait] remaining=24m
+-------------------------------------
+OrderID: 2 | Customer: bao | Table: 3 | Status: Cooking
+ - Pho Kho Gia Lai x2 [wait] remaining=24m
+-------------------------------------
+OrderID: 2 | Customer: bao | Table: 2 | Status: Cooking
+ - Pho Kho Gia Lai x2 [wait] remaining=24m
+-------------------------------------
+OrderID: 3 | Customer: bao | Table: 3 | Status: Cooking
+ - Pho Kho Gia Lai x2 [wait] remaining=24m
+-------------------------------------
+OrderID: 4 | Customer: bao | Table: 2 + 4 | Status: Cooking
+ - Pho Ha Noi x3 [wait] remaining=36m
+-------------------------------------
+OrderID: 5 | Customer: bao | Table: 2 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 5 | Customer: bao | Table: 2 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 5 | Customer: bao | Table: 2 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 5 | Customer: bao | Table: 2 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 5 | Customer: bao | Table: 2 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 6 | Customer: bao | Table: 3 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 6 | Customer: bao | Table: 3 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 6 | Customer: bao | Table: 3 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 6 | Customer: bao | Table: 3 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 6 | Customer: bao | Table: 3 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 6 | Customer: bao | Table: 3 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 6 | Customer: bao | Table: 3 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 6 | Customer: bao | Table: 3 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 6 | Customer: bao | Table: 3 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 6 | Customer: bao | Table: 3 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 6 | Customer: bao | Table: 3 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 6 | Customer: bao | Table: 3 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 6 | Customer: bao | Table: 3 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 6 | Customer: bao | Table: 3 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 6 | Customer: bao | Table: 3 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 6 | Customer: bao | Table: 3 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 6 | Customer: bao | Table: 3 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+-------------------------------------
+OrderID: 6 | Customer: bao | Table: 3 | Status: Cooking
+ - Banh Xeo x4 [wait] remaining=56m
+-------------------------------------

@@ -1,0 +1,5 @@
+OrderID: 1 | Total: 2940000 | Items: Lau Ca Duoix3, Lau Ca Duoix4
+OrderID: 2 | Total: 240000 | Items: Pho Kho Gia Laix2
+OrderID: 3 | Total: 240000 | Items: Pho Kho Gia Laix2
+OrderID: 4 | Total: 360000 | Items: Pho Ha Noix3
+OrderID: 5 | Total: 260000 | Items: Com Tam Sai Gonx2

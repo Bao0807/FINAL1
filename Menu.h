@@ -1,4 +1,3 @@
-
 #pragma once
 #include <iostream>
 #include <string>
@@ -49,15 +48,7 @@ MenuItem menuList[] = {
     {"Mi Quang Ga", 120000, true, 11},
     {"Bun Cha Ha Noi", 150000, true, 16},
     {"Lau Bo Nam", 450000, true, 25},
-    {"Lau De Lang Son", 480000, true, 30},
-    {"Lau Thai Tomyum", 500000, true, 20},
-    {"Lau Ca Duoi", 420000, true, 22},
-    {"Banh Flan", 35000, true, 8},
-    {"Banh Bo ", 45000, true, 12},
-    {"Che Suong Sao", 50000, true, 6},
-    {"Kem Vani", 40000, true, 5},
-    {"Sua Chua", 40000, true, 4},
-    {"Banh Dau Xanh", 50000, true, 10}};
+    {"Lau De Lang Son", 480000, true, 30}};
 int menuSize = sizeof(menuList) / sizeof(menuList[0]);
 
 void displayMenu()
