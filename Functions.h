@@ -51,7 +51,7 @@ void updateRevenue(const Order &o);
 void viewRevenueSummary();
 
 void addOrder(Queue &q, int &idCounter);
-void displayAll(Queue &q);
+void displayQueue(Queue &q);
 void editOrder(Queue &q);
 void deleteOrder(Queue &q);
 void advanceTime(Queue &q, int seconds);
@@ -781,18 +781,20 @@ void addOrder(Queue &q, int &idCounter)
     }
 }
 
-void displayAll(Queue &q)
+void displayQueue(Queue &q)
 {
-    // Hiển thị duy nhất các order đang có trong hàng đợi (queue)
-    clearScreen();
-    cout << "\n===== ORDERS IN QUEUE =====\n";
-    if (q.count == 0)
+    // Lặp menu hành động (vẫn cho phép Delete / Edit / Temp bill / Save / Back)
+    while (true)
     {
-        cout << "No orders in queue.\n";
-    }
-    else
-    {
-        for (int i = 0; i < q.count; i++)
+        clearScreen();
+        cout << "\n===== ORDERS IN QUEUE =====\n";
+        if (q.count == 0)
+        {
+            cout << "No orders in queue.\n";
+        }
+        else
+        {
+            for (int i = 0; i < q.count; i++)
         {
             int idx = (q.front + i) % MAX;
             Order &o = q.orders[idx];
@@ -811,29 +813,6 @@ void displayAll(Queue &q)
             cout << "\n";
         }
     }
-
-    // Lặp menu hành động (vẫn cho phép Delete / Edit / Temp bill / Save / Back)
-    while (true)
-    {
-        clearScreen();
-        cout << "\n===== ORDERS IN QUEUE =====\n";
-        if (q.count == 0)
-        {
-            cout << "No orders in queue.\n";
-        }
-        else
-        {
-            for (int i = 0; i < q.count; i++)
-            {
-                int idx = (q.front + i) % MAX;
-                Order &o = q.orders[idx];
-                cout << "OrderID: " << o.id
-                     << " | Name: " << o.customerName
-                     << " | Table: " << o.tableNumber
-                     << " | Status: " << o.status
-                     << " | Total: " << formatPrice(o.total) << "\n";
-            }
-        }
 
         cout << "Actions in Display: 1-Delete  2-Edit  3-Temp bill (COOK)  4-Save (hold)  0-Back\nChoose: ";
         int act;
@@ -1156,7 +1135,7 @@ void manageData(Queue &q, int &idCounter)
             addOrder(q, idCounter);
             break;
         case 2:
-            displayAll(q);
+            displayQueue(q);
             break;
         case 0:
             break;

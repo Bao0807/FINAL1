@@ -108,3 +108,11 @@ OrderID: 7 | Customer: bao | Table: 3 | Status: Cooking
 OrderID: 8 | Customer: bao | Table: 2 | Status: Cooking
  - Com Tam Sai Gon x2 [cook] remaining=15m
 -------------------------------------
+OrderID: 7 | Customer: bao | Table: 1 | Status: Cooking
+-------------------------------------
+OrderID: 8 | Customer: bao | Table: 2 | Status: Cooking
+ - Bun Dau Mam Tom x2 [cook] remaining=24m
+-------------------------------------
+OrderID: 7 | Customer: bao | Table: 3 | Status: Cooking
+ - Pho Kho Gia Lai x2 [cook] remaining=22m
+-------------------------------------

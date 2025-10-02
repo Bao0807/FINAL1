@@ -3,7 +3,7 @@
 
 using namespace std;
 
-static void waitEnter()
+void waitEnter()
 {
     cout << "\nPress Enter to continue...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -44,7 +44,7 @@ int main()
         case 2:
         {
             // Hiển thị toàn bộ đơn trong queue (tiến độ, trạng thái, items)
-            displayAll(q);
+            displayQueue(q);
             break;
         }
         case 3:
