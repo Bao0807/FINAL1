@@ -69,38 +69,48 @@ void startTimer(Queue *q)
     g_timerRunning.store(true);
     g_timerThread = std::thread([]()
                                 {
-        while (g_timerRunning.load()) {
+        while (g_timerRunning.load())
+        {
             std::this_thread::sleep_for(std::chrono::seconds(1));
-            if (g_queuePtr) {
-                // giảm 1 giây cho tất cả đơn trong queue
-                advanceTime(*g_queuePtr, 1);
-                // kiểm tra và xử lý đơn hoàn thành
-                int toRemove[MAX];
-                int remCount = 0;
-                for (int i = 0; i < g_queuePtr->count; ++i) {
-                    int idx = (g_queuePtr->front + i) % MAX;
-                    Order &o = g_queuePtr->orders[idx];
-                    if (o.itemCount <= 0) continue;
-                    bool allZero = true;
-                    for (int j = 0; j < o.itemCount; ++j) {
-                        if (o.items[j].remainingTime > 0) { allZero = false; break; }
-                    }
-                    if (allZero && o.status != "Ready" && o.status != "Saved") {
-                        if (remCount < MAX) toRemove[remCount++] = o.id;
-                    }
+            if (!g_queuePtr) continue;
+
+            // giảm 1 giây cho ORDER đầu tiên có status == "Cooking"
+            advanceTime(*g_queuePtr, 1);
+
+            // kiểm tra các order hoàn thành (all remainingTime == 0) -> remove & lưu bill (Ready)
+            int toRemove[MAX];
+            int remCount = 0;
+            for (int i = 0; i < g_queuePtr->count; ++i)
+            {
+                int idx = (g_queuePtr->front + i) % MAX;
+                Order &o = g_queuePtr->orders[idx];
+                if (o.itemCount <= 0) continue;
+                bool allZero = true;
+                for (int j = 0; j < o.itemCount; ++j)
+                {
+                    if (o.items[j].remainingTime > 0) { allZero = false; break; }
                 }
-                for (int k = 0; k < remCount; ++k) {
-                    Order rem;
-                    if (removeOrderByID(*g_queuePtr, toRemove[k], rem)) {
-                        rem.status = "Ready"; // hoàn thành, chưa thanh toán
-                        saveBillToFile(rem);
-                        writeProgressTxt(rem);
-                        cout << "Order ID " << rem.id << " finished -> moved out of queue and saved (Ready).\n";
-                    }
+                if (allZero && o.status != "Saved" && o.status != "Ready")
+                {
+                    // đánh dấu sẽ remove
+                    if (remCount < MAX) toRemove[remCount++] = o.id;
+                }
+            }
+
+            for (int k = 0; k < remCount; ++k)
+            {
+                Order rem;
+                if (removeOrderByID(*g_queuePtr, toRemove[k], rem))
+                {
+                    rem.status = "Ready"; // hoàn thành, chưa thanh toán
+                    saveBillToFile(rem);
+                    writeProgressTxt(rem);
+                    cout << "Order ID " << rem.id << " finished -> moved out of queue and saved (Ready).\n";
                 }
             }
         } });
 }
+
 // dừng timer
 void stopTimer()
 {
@@ -109,6 +119,55 @@ void stopTimer()
     g_timerRunning.store(false);
     if (g_timerThread.joinable())
         g_timerThread.join();
+}
+
+// ======= advanceTime (đơn vị: giây) =======
+// Thay đổi: chỉ giảm cho order đầu tiên trong queue có status == "Cooking"
+void advanceTime(Queue &q, int seconds)
+{
+    if (seconds <= 0)
+        return;
+    if (q.count == 0)
+        return;
+
+    // Tìm order đầu tiên trong queue có status == "Cooking"
+    int targetIdx = -1;
+    for (int i = 0; i < q.count; ++i)
+    {
+        int idx = (q.front + i) % MAX;
+        if (q.orders[idx].status == "Cooking")
+        {
+            targetIdx = idx;
+            break;
+        }
+    }
+
+    if (targetIdx == -1)
+        return; // không có order đang nấu -> không giảm
+
+    Order &o = q.orders[targetIdx];
+    bool anyRunning = false;
+    for (int j = 0; j < o.itemCount; ++j)
+    {
+        OrderDetail &d = o.items[j];
+        if (d.remainingTime > 0)
+        {
+            if (d.remainingTime > seconds)
+                d.remainingTime -= seconds;
+            else
+                d.remainingTime = 0;
+        }
+        if (d.remainingTime > 0)
+            anyRunning = true;
+    }
+
+    if (o.itemCount > 0)
+    {
+        if (anyRunning)
+            o.status = "Cooking";
+        else
+            o.status = "Ready";
+    }
 }
 
 // ======= Definitions =======
@@ -281,7 +340,7 @@ bool removeOrderByID(Queue &q, int id, Order &out)
 
 void printBill(const Order &o)
 {
-    // Tạo chuỗi các bàn: bàn chính + các bàn được merge (gTableOwner == o.id)
+    // build table string (bàn chính + các bàn được merge (gTableOwner == o.id))
     int tables[NUM_TABLES];
     int tcount = 0;
     if (o.tableNumber >= 1 && o.tableNumber <= NUM_TABLES)
@@ -315,7 +374,7 @@ void printBill(const Order &o)
     if (tableStr.empty())
         tableStr = std::to_string(o.tableNumber);
 
-    // Giao diện bill theo yêu cầu (ANSI colors)
+    // Header (ANSI colors)
     cout << "\x1b[36m\n=================================================================\n"
          << "                          RESTAURANT BILL           \n"
          << "=================================================================\n\x1b[0m";
@@ -324,14 +383,40 @@ void printBill(const Order &o)
     cout << "Table:\x1b[33m" << tableStr << "\x1b[0m\n";
     cout << "-----------------------------------------------------------------\n";
     cout << "\x1b[35mNo\tFood Name\t\tQuantity\tPrice\x1b[0m\n";
+
     for (int i = 0; i < o.itemCount; i++)
     {
         cout << (i + 1) << ".\t" << o.items[i].foodName << "\t\t"
              << o.items[i].quantity << "\t\t" << formatPrice(o.items[i].subtotal) << "\n";
     }
+
     cout << "-----------------------------------------------------------------\n";
     cout << "\x1b[31mTOTAL: " << formatPrice(o.total) << " VND\x1b[0m\n";
     cout << "Status: " << o.status << "\n";
+
+    // Progress section: show remaining time per item (seconds) or done
+    cout << "\n\x1b[33mPROGRESS: \x1b[0m";
+    if (o.itemCount == 0)
+    {
+        cout << "  (No items)\n";
+    }
+    else
+    {
+        for (int i = 0; i < o.itemCount; ++i)
+        {
+            const OrderDetail &d = o.items[i];
+            if (d.remainingTime > 0)
+            {
+                cout << d.remainingTime << "s remaining";
+            }
+            else
+            {
+                cout << "\x1b[32mDONE\x1b[0m";
+            }
+            cout << "\n";
+        }
+    }
+
     cout << "\x1b[36m=================================================================\x1b[0m\n";
 }
 
@@ -525,7 +610,7 @@ void viewRevenueSummary()
     cout << "=======================\n";
 }
 
-// thay đổi addOrder: sau enqueue đặt trạng thái Cooking và khởi động timer nếu chưa chạy
+// thay o.status = "Cooking" khi thêm -> đặt mặc định Pending, temp-bill sẽ bật Cooking
 void addOrder(Queue &q, int &idCounter)
 {
     clearScreen();
@@ -588,8 +673,8 @@ void addOrder(Queue &q, int &idCounter)
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
     } while (more == 'y' || more == 'Y');
 
-    // mặc định khi add xong đặt Pending nhưng theo yêu cầu bắt đầu đếm ngay -> đặt Cooking
-    o.status = "Cooking";
+    // mặc định khi add xong đặt Pending (không tự chạy timer nếu chưa temp-bill)
+    o.status = "Pending";
 
     if (!enqueue(q, o))
     {
@@ -599,7 +684,7 @@ void addOrder(Queue &q, int &idCounter)
         return;
     }
 
-    // đảm bảo timer chạy (không tạo nhiều thread vì startTimer kiểm tra flag)
+    // đảm bảo timer chạy
     startTimer(&q);
 
     cout << "Added order ID " << o.id << "\n";
@@ -795,24 +880,24 @@ void displayQueue(Queue &q)
         else
         {
             for (int i = 0; i < q.count; i++)
-        {
-            int idx = (q.front + i) % MAX;
-            Order &o = q.orders[idx];
-            cout << "OrderID: " << o.id
-                 << " | Name: " << o.customerName
-                 << " | Table: " << o.tableNumber
-                 << " | Status: " << o.status
-                 << " | Total: " << formatPrice(o.total) << "\n";
-            for (int j = 0; j < o.itemCount; j++)
             {
-                cout << "  - " << o.items[j].foodName
-                     << " x" << o.items[j].quantity
-                     << " | remain " << o.items[j].remainingTime << "s"
-                     << " [" << itemState(o.items[j]) << "]\n";
+                int idx = (q.front + i) % MAX;
+                Order &o = q.orders[idx];
+                cout << "OrderID: " << o.id
+                     << " | Name: " << o.customerName
+                     << " | Table: " << o.tableNumber
+                     << " | Status: " << o.status
+                     << " | Total: " << formatPrice(o.total) << "\n";
+                for (int j = 0; j < o.itemCount; j++)
+                {
+                    cout << "  - " << o.items[j].foodName
+                         << " x" << o.items[j].quantity
+                         << " | remain " << o.items[j].remainingTime << "s"
+                         << " [" << itemState(o.items[j]) << "]\n";
+                }
+                cout << "\n";
             }
-            cout << "\n";
         }
-    }
 
         cout << "Actions in Display: 1-Delete  2-Edit  3-Temp bill (COOK)  4-Save (hold)  0-Back\nChoose: ";
         int act;
@@ -993,38 +1078,38 @@ void deleteOrder(Queue &q)
         cout << "Not found.\n";
 }
 
-void advanceTime(Queue &q, int seconds)
-{
-    if (seconds <= 0)
-        return;
-    for (int i = 0; i < q.count; ++i)
-    {
-        int idx = (q.front + i) % MAX;
-        Order &o = q.orders[idx];
-        bool anyRunning = false;
-        for (int j = 0; j < o.itemCount; ++j)
-        {
-            OrderDetail &d = o.items[j];
-            if (d.remainingTime > 0)
-            {
-                // remainingTime lưu đơn vị giây
-                if (d.remainingTime > seconds)
-                    d.remainingTime -= seconds;
-                else
-                    d.remainingTime = 0;
-            }
-            if (d.remainingTime > 0)
-                anyRunning = true;
-        }
-        if (o.itemCount > 0)
-        {
-            if (anyRunning)
-                o.status = "Cooking";
-            else
-                o.status = "Ready";
-        }
-    }
-}
+// void advanceTime(Queue &q, int seconds)
+// {
+//     if (seconds <= 0)
+//         return;
+//     for (int i = 0; i < q.count; ++i)
+//     {
+//         int idx = (q.front + i) % MAX;
+//         Order &o = q.orders[idx];
+//         bool anyRunning = false;
+//         for (int j = 0; j < o.itemCount; ++j)
+//         {
+//             OrderDetail &d = o.items[j];
+//             if (d.remainingTime > 0)
+//             {
+//                 // remainingTime lưu đơn vị giây
+//                 if (d.remainingTime > seconds)
+//                     d.remainingTime -= seconds;
+//                 else
+//                     d.remainingTime = 0;
+//             }
+//             if (d.remainingTime > 0)
+//                 anyRunning = true;
+//         }
+//         if (o.itemCount > 0)
+//         {
+//             if (anyRunning)
+//                 o.status = "Cooking";
+//             else
+//                 o.status = "Ready";
+//         }
+//     }
+// }
 
 void searchByTable(Queue &q, int tableNo)
 {

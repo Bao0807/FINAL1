@@ -116,3 +116,43 @@ OrderID: 8 | Customer: bao | Table: 2 | Status: Cooking
 OrderID: 7 | Customer: bao | Table: 3 | Status: Cooking
  - Pho Kho Gia Lai x2 [cook] remaining=22m
 -------------------------------------
+OrderID: 8 | Customer: bao | Table: 2 | Status: Cooking
+ - Pho Kho Gia Lai x2 [cook] remaining=22m
+-------------------------------------
+OrderID: 9 | Customer: bao | Table: 4 | Status: Cooking
+ - Bun Dau Mam Tom x14 [cook] remaining=207m
+-------------------------------------
+OrderID: 9 | Customer: bao | Table: 4 | Status: Cooking
+ - Bun Dau Mam Tom x14 [cook] remaining=180m
+-------------------------------------
+OrderID: 9 | Customer: bao | Table: 4 | Status: Cooking
+ - Bun Dau Mam Tom x14 [cook] remaining=176m
+-------------------------------------
+OrderID: 9 | Customer: bao | Table: 4 | Status: Cooking
+ - Bun Dau Mam Tom x14 [cook] remaining=173m
+-------------------------------------
+OrderID: 10 | Customer: bao | Table: 3 | Status: Cooking
+ - Pho Ha Noi x2 [cook] remaining=22m
+-------------------------------------
+OrderID: 11 | Customer: bao | Table: 3 | Status: Cooking
+ - Pho Kho Gia Lai x2 [cook] remaining=23m
+-------------------------------------
+OrderID: 12 | Customer: han | Table: 4 | Status: Cooking
+ - Bun Bo Hue x2 [cook] remaining=25m
+-------------------------------------
+OrderID: 12 | Customer: bao | Table: 3 | Status: Cooking
+ - Bun Dau Mam Tom x4 [cook] remaining=58m
+-------------------------------------
+OrderID: 13 | Customer: han | Table: 4 | Status: Cooking
+ - Com Tam Sai Gon x2 [cook] remaining=18m
+-------------------------------------
+OrderID: 12 | Customer: bao | Table: 3 | Status: Cooking
+ - Com Tam Sai Gon x2 [wait] remaining=20m
+ - Pho Kho Gia Lai x2 [wait] remaining=24m
+-------------------------------------
+OrderID: 12 | Customer: bao | Table: 2 | Status: Cooking
+ - Pho Ha Noi x4 [wait] remaining=48m
+-------------------------------------
+OrderID: 13 | Customer: bao | Table: 1 | Status: Cooking
+ - Pho Ha Noi x4 [wait] remaining=48m
+-------------------------------------
