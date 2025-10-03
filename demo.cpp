@@ -22,8 +22,8 @@ int main()
         clearScreen();
 
         cout << "\n===== RESTAURANT =====\n";
-        cout << "1. Quan ly du lieu (Add & Display)\n";
-        cout << "2. Tien do don:\n";
+        cout << "1. Add:\n";
+        cout << "2. Display:\n";
         cout << "3. Tim kiem theo so ban\n";
         cout << "4. Doanh thu & so luong\n";
         cout << "5. Thanh toan (hoi so ban -> chon hinh thuc)\n";
@@ -38,12 +38,13 @@ int main()
         {
         case 1:
         {
-            manageData(q, idCounter);
+            addOrder(q, idCounter);
             break;
         }
         case 2:
         {
             // Hiển thị toàn bộ đơn trong queue (tiến độ, trạng thái, items)
+            displayTables();
             displayQueue(q);
             break;
         }
