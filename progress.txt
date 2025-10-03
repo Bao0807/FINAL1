@@ -1,0 +1,15 @@
+OrderID: 1 | Customer: bao | Table: 7 | Status: Cooking
+ - Bun Bo Hue x5 [wait] remaining=65m
+-------------------------------------
+OrderID: 2 | Customer: bao | Table: 4 | Status: Cooking
+ - Pho Kho Gia Lai x4 [wait] remaining=48m
+-------------------------------------
+OrderID: 3 | Customer: bao | Table: 4 | Status: Cooking
+ - Pho Kho Gia Lai x3 [wait] remaining=36m
+-------------------------------------
+OrderID: 3 | Customer: bao | Table: 4 | Status: Cooking
+ - Pho Kho Gia Lai x3 [cook] remaining=19m
+-------------------------------------
+OrderID: 2 | Customer: bao | Table: 3 | Status: Cooking
+ - Banh Xeo x3 [wait] remaining=42m
+-------------------------------------

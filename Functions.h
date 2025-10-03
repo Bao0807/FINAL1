@@ -16,8 +16,8 @@ using namespace std;
 // helper clear screen dùng ANSI
 
 // ===== timer globals (không dùng static/inline) =====
-std::thread g_timerThread;
-std::atomic<bool> g_timerRunning(false);
+thread g_timerThread;
+atomic<bool> g_timerRunning(false);
 int g_secondsPer_minute = 60; // số giây tương ứng 1 "phút" mô phỏng
 Queue *g_queuePtr = nullptr;  // con trỏ tới queue dùng trong thread
 
@@ -54,11 +54,11 @@ void startTimer(Queue *q)
         return;
     g_queuePtr = q;
     g_timerRunning.store(true);
-    g_timerThread = std::thread([]()
+    g_timerThread = thread([]()
                                 {
         while (g_timerRunning.load())
         {
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            this_thread::sleep_for(chrono::seconds(1));
             if (!g_queuePtr) continue;
 
             // giảm 1 giây cho ORDER đầu tiên có status == "Cooking"
@@ -157,27 +157,6 @@ void advanceTime(Queue &q, int seconds)
     }
 }
 
-// ======= Definitions =======
-string formatPrice(long long price)
-{
-    char tmp[32];
-    snprintf(tmp, sizeof(tmp), "%lld", (long long)price);
-    string s = tmp, out;
-    out.reserve(s.size() + s.size() / 3 + 2);
-    int c = 0;
-    for (int i = (int)s.size() - 1; i >= 0; --i)
-    {
-        out.insert(out.begin(), s[i]);
-        c++;
-        if (c == 3 && i > 0)
-        {
-            out.insert(out.begin(), '.');
-            c = 0;
-        }
-    }
-    return out;
-}
-
 int getLastOrderID()
 {
     ifstream fin("bill.txt");
@@ -266,36 +245,17 @@ void printBill(const Order &o)
     // build table string (bàn chính + các bàn được merge (gTableOwner == o.id))
     int tables[NUM_TABLES];
     int tcount = 0;
-    if (o.tableNumber >= 1 && o.tableNumber <= NUM_TABLES)
-        tables[tcount++] = o.tableNumber;
 
-    for (int t = 0; t < NUM_TABLES; ++t)
-    {
-        if (gTableOwner[t] == o.id)
-        {
-            int tn = t + 1;
-            bool already = false;
-            for (int k = 0; k < tcount; ++k)
-                if (tables[k] == tn)
-                {
-                    already = true;
-                    break;
-                }
-            if (!already)
-                tables[tcount++] = tn;
-        }
-    }
-
-    std::ostringstream tboss;
+    ostringstream tboss;
     for (int i = 0; i < tcount; ++i)
     {
         if (i)
             tboss << " + ";
         tboss << tables[i];
     }
-    std::string tableStr = tboss.str();
+    string tableStr = tboss.str();
     if (tableStr.empty())
-        tableStr = std::to_string(o.tableNumber);
+        tableStr = to_string(o.tableNumber);
 
     // Header (ANSI colors)
     cout << "\x1b[36m\n=================================================================\n"
@@ -367,7 +327,7 @@ void saveBillToFile(const Order &o)
                 tables[tcount++] = tn;
         }
     }
-    std::ostringstream oss;
+    ostringstream oss;
     for (int i = 0; i < tcount; ++i)
     {
         if (i)
@@ -652,8 +612,8 @@ void addOrder(Queue &q, int &idCounter)
             if (name != ".")
                 f->customerName = name;
 
-            // Thay đổi bàn: đưa 2 lựa chọn Move hoặc Add(merge)
-            cout << "Table action: 1-Move to another table  2-Add another table (merge)  0-Keep current\nChoose: ";
+            // Thay đổi bàn
+            cout << "Table action: 1-Move to another table  0-Keep current\nChoose: ";
             int tc;
             if (!(cin >> tc))
             {
@@ -678,33 +638,6 @@ void addOrder(Queue &q, int &idCounter)
                 // nếu bàn cũ không còn order thì empty
                 if (!anyOrderForTable(q, old))
                     gTableStatus[old - 1] = "Empty";
-            }
-            else if (tc == 2)
-            {
-                cout << "Select table to ADD (merge) with current order: ";
-                int addt;
-                if (!(cin >> addt))
-                {
-                    cin.clear();
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                    addt = -1;
-                }
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                if (addt >= 1 && addt <= NUM_TABLES)
-                {
-                    if (gTableOwner[addt - 1] == 0 && !anyOrderForTable(q, addt))
-                    {
-                        gTableOwner[addt - 1] = f->id;
-                        gTableStatus[addt - 1] = "Full";
-                        cout << "Merged table " << addt << " into order " << f->id << ".\n";
-                    }
-                    else
-                    {
-                        cout << "Table not available to merge.\n";
-                    }
-                }
-                else
-                    cout << "Invalid table.\n";
             }
             // tiếp tục edit món nếu muốn
             cout << "Add more items? (y/n): ";

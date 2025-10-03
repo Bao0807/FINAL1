@@ -1,0 +1,2 @@
+OrderID: 1 | Total: 650000 | Items: Bun Bo Huex5
+OrderID: 2 | Total: 360000 | Items: Banh Xeox3

@@ -1,7 +1,6 @@
 #pragma once
 #include "Queue.h"
 #include "Menu.h"
-#include "Functions.h"
 using namespace std;
 
 const int NUM_TABLES = 10;
@@ -63,7 +62,7 @@ void makeSquare(string box[], const string &text1, const string &text2, bool isF
 }
 
 void displayTables()
-{   
+{
     string boxes[NUM_TABLES][HEIGHT];
 
     // Tạo toàn bộ 10 ô (TABLE + trạng thái)

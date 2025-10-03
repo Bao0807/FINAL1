@@ -1,14 +1,6 @@
 #include <iostream>
 #include "Functions.h"
-
 using namespace std;
-
-void waitEnter()
-{
-    cout << "\nPress Enter to continue...";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cin.get();
-}
 
 int main()
 {
@@ -22,8 +14,8 @@ int main()
         clearScreen();
 
         cout << "\n===== RESTAURANT =====\n";
-        cout << "1. Add:\n";
-        cout << "2. Display:\n";
+        cout << "1. Add\n";
+        cout << "2. Display\n";
         cout << "3. Tim kiem theo so ban\n";
         cout << "4. Doanh thu & so luong\n";
         cout << "5. Thanh toan (hoi so ban -> chon hinh thuc)\n";
@@ -74,9 +66,6 @@ int main()
         default:
             cout << "Invalid.\n";
         }
-
-        if (choice != 0)
-            waitEnter();
 
     } while (choice != 0);
     return 0;
