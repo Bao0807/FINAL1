@@ -13,3 +13,50 @@ OrderID: 3 | Customer: bao | Table: 4 | Status: Cooking
 OrderID: 2 | Customer: bao | Table: 3 | Status: Cooking
  - Banh Xeo x3 [wait] remaining=42m
 -------------------------------------
+OrderID: 3 | Customer: bao | Table: 1 | Status: Cooking
+ - Pho Kho Gia Lai x2 [wait] remaining=24m
+-------------------------------------
+OrderID: 4 | Customer: bao | Table: 3 | Status: Cooking
+ - Pho Kho Gia Lai x3 [wait] remaining=36m
+-------------------------------------
+OrderID: 5 | Customer: BAO | Table: 4 | Status: Cooking
+ - Bun Dau Mam Tom x2 [wait] remaining=30m
+-------------------------------------
+OrderID: 5 | Customer: BAO | Table: 4 | Status: Cooking
+ - Bun Dau Mam Tom x3 [wait] remaining=45m
+-------------------------------------
+OrderID: 6 | Customer: bao | Table: 4 | Status: Cooking
+ - Pho Kho Gia Lai x2 [wait] remaining=24m
+-------------------------------------
+OrderID: 7 | Customer: bao | Table: 8 | Status: Cooking
+ - Banh Xeo x3 [wait] remaining=42m
+-------------------------------------
+OrderID: 8 | Customer: bao | Table: 4 | Status: Cooking
+ - Bun Dau Mam Tom x3 [wait] remaining=45m
+-------------------------------------
+OrderID: 9 | Customer: bao | Table: 3 | Status: Cooking
+ - Bun Bo Hue x3 [wait] remaining=39m
+-------------------------------------
+OrderID: 10 | Customer: bao | Table: 3 | Status: Cooking
+ - Bun Dau Mam Tom x3 [wait] remaining=45m
+-------------------------------------
+OrderID: 10 | Customer: bao | Table: 3 | Status: Cooking
+ - Banh Xeo x3 [wait] remaining=42m
+-------------------------------------
+OrderID: 11 | Customer: bao | Table: 4 | Status: Cooking
+ - Pho Kho Gia Lai x3 [wait] remaining=36m
+-------------------------------------
+OrderID: 11 | Customer: bao | Table: 1 | Status: Cooking
+ - Com Tam Sai Gon x3 [wait] remaining=30m
+-------------------------------------
+OrderID: 11 | Customer: bao | Table: 1 | Status: Cooking
+ - Com Tam Sai Gon x3 [cook] remaining=5m
+-------------------------------------
+OrderID: 11 | Customer: bao | Table: 5 | Status: Cooking
+ - Banh Xeo x3 [wait] remaining=42m
+-------------------------------------
+OrderID: 11 | Customer: bao | Table: 3 | Status: Cooking
+-------------------------------------
+OrderID: 11 | Customer: bao | Table: 2 | Status: Cooking
+ - Com Tam Sai Gon x3 [wait] remaining=30m
+-------------------------------------

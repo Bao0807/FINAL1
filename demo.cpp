@@ -19,6 +19,7 @@ int main()
         cout << "3. Tim kiem theo so ban\n";
         cout << "4. Doanh thu & so luong\n";
         cout << "5. Thanh toan (hoi so ban -> chon hinh thuc)\n";
+        cout << "6. Update Menu\n";
         cout << "0. EXIT\n";
         cout << "Choice: ";
         cin >> choice;
@@ -57,6 +58,28 @@ int main()
         {
             payment(q);
             break;
+        }
+        case 6:
+        {
+            cout << "1.Sort menu ascending      2.Sort menu descending      3.Update status     0.Back\n";
+            cout << "Choice: ";
+            int n;
+            cin >> n;
+            cin.ignore();
+            if (n == 1)
+            {
+                sortMenuAscending();
+            }
+            else if (n == 2)
+            {
+                sortMenuDescending();
+            }
+            else if (n == 3)
+            {
+                updateFoodStatus();
+            }
+            else
+                break;
         }
         case 0:
         {

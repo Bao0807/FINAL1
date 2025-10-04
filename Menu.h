@@ -3,20 +3,18 @@
 #include <string>
 using namespace std;
 
-// ============ MENU (menu.h chỉ chứa menu) ============
-// Các function có trong hàm:
-// void displayMenu();
-// MenuItem getMenuItem(const string &input);
-// bool updateAvailability(const string &food, bool status);
-// string formatPrice(long long price)
-
-
 struct MenuItem {
     string foodName;
     long long price; // VND
     bool available;
     int prepTime; // second for one portion
 };
+
+void enter(){
+    cout << "\nPress Enter to continue...";
+    string _tmp;
+    getline(cin, _tmp);
+}
 
 MenuItem menuList[] = {
     {"Pho Ha Noi", 120000, true, 12},
@@ -29,7 +27,7 @@ MenuItem menuList[] = {
     {"Bun Cha Ha Noi", 150000, true, 16},
     {"Lau Bo Nam", 450000, true, 25},
     {"Lau De Lang Son", 480000, true, 30},
-    {"Coca cola", 20000, true, 30}
+    {"Coca cola", 20000, true, 3}
 };
 int menuSize = sizeof(menuList) / sizeof(menuList[0]);
 
@@ -43,7 +41,7 @@ string formatPrice(long long price){ // edit
 
 void displayMenu(){
     cout << "\x1b[36m\n================================== MENU ==================================\x1b[0m\n";
-    cout << "\x1b[35mNo\tFood Name\t\tPrice\t\tPrep(min)\tStatus\x1b[0m\n";
+    cout << "\x1b[35mNo\tFood Name\t\tPrice\t\tPrep(second)\tStatus\x1b[0m\n";
     for (int i = 0; i < menuSize; i++){
         cout << "\x1b[33m" << i + 1 << ".\x1b[0m\t";
         cout << menuList[i].foodName << "\t\t";
@@ -98,3 +96,89 @@ bool updateAvailability(const string &food, bool status){
     return false;
 }
 
+// ======================= SORT MENU BY PRICE ===========================
+void sortMenuAscending() { // Sắp xếp tăng dần theo giá
+    for (int i = 1; i < menuSize; i++) {
+        MenuItem key = menuList[i];
+        int j = i - 1;
+        while (j >= 0 && menuList[j].price > key.price) {
+            menuList[j + 1] = menuList[j];
+            j--;
+        }
+        menuList[j + 1] = key;
+    }
+
+    cout << "\x1b[36m\nMenu sorted in ascending order by price\x1b[0m\n";
+    displayMenu();
+    enter();
+}
+
+void sortMenuDescending() { // Sắp xếp giảm dần theo giá
+    for (int i = 1; i < menuSize; i++) {
+        MenuItem key = menuList[i];
+        int j = i - 1;
+        while (j >= 0 && menuList[j].price < key.price) {
+            menuList[j + 1] = menuList[j];
+            j--;
+        }
+        menuList[j + 1] = key;
+    }
+
+    cout << "\x1b[36m\nMenu sorted in descending order by price\x1b[0m\n";
+    displayMenu();
+    enter();
+}
+
+void updateFoodStatus() {
+    cout << "\x1b[36m\n========= UPDATE FOOD STATUS =========\x1b[0m\n";
+    displayMenu();
+
+    cout << "\x1b[33mEnter the food name or number to update status:\x1b[0m ";
+    string input;
+    getline(cin, input);
+
+    // Xác định món ăn (bằng số hoặc tên)
+    MenuItem found = getMenuItem(input);
+    if (found.foodName == "") {
+        cout << "\x1b[31mFood not found or currently unavailable!\x1b[0m\n";
+        return;
+    }
+
+    // Tìm vị trí món ăn trong mảng menuList
+    int index = -1;
+    for (int i = 0; i < menuSize; i++) {
+        if (menuList[i].foodName == found.foodName) {
+            index = i;
+            break;
+        }
+    }
+
+    if (index == -1) {
+        cout << "\x1b[31mError: could not locate food in menuList!\x1b[0m\n";
+        return;
+    }
+
+    // Hiện trạng thái hiện tại
+    cout << "\nCurrent status of \x1b[33m" << menuList[index].foodName << "\x1b[0m: ";
+    if (menuList[index].available)
+        cout << "\x1b[32mAvailable\x1b[0m\n";
+    else
+        cout << "\x1b[31mSold out\x1b[0m\n";
+
+    // Chọn trạng thái mới
+    cout << "Enter new status (1 = Available, 0 = Sold out): ";
+    int newStatus;
+    cin >> newStatus;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    if (newStatus != 0 && newStatus != 1) {
+        cout << "\x1b[31mInvalid input. Must be 1 or 0.\x1b[0m\n";
+        return;
+    }
+
+    menuList[index].available = (newStatus == 1);
+    cout << "\x1b[32mStatus updated successfully!\x1b[0m\n";
+
+    displayMenu();
+    enter();
+}

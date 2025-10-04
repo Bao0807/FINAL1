@@ -46,6 +46,8 @@ void searchByTable(Queue &q, int tableNo);
 void payment(Queue &q);
 void manageData(Queue &q, int &idCounter);
 
+void enter();
+
 // ======= Timer functions (new) =======
 // start background timer: mỗi vòng là 1 giây mô phỏng
 void startTimer(Queue *q)
@@ -55,7 +57,7 @@ void startTimer(Queue *q)
     g_queuePtr = q;
     g_timerRunning.store(true);
     g_timerThread = thread([]()
-                                {
+                           {
         while (g_timerRunning.load())
         {
             this_thread::sleep_for(chrono::seconds(1));
@@ -491,6 +493,8 @@ void viewRevenueSummary()
     for (int i = 0; i < cc; i++)
         cout << " - " << cnt[i].name << ": " << cnt[i].qty << "\n";
     cout << "=======================\n";
+    cin.ignore();
+    enter();
 }
 
 // thay o.status = "Cooking" khi thêm -> đặt mặc định Pending, temp-bill sẽ bật Cooking
@@ -613,17 +617,17 @@ void addOrder(Queue &q, int &idCounter)
                 f->customerName = name;
 
             // Thay đổi bàn
-            cout << "Table action: 1-Move to another table  0-Keep current\nChoose: ";
-            int tc;
+            cout << "Move to another table(y/n): ";
+            char tc;
             if (!(cin >> tc))
             {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                tc = 0;
+                tc = 'N';
             }
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-            if (tc == 1)
+            if (tc == 'Y' || tc == 'y')
             {
                 int old = f->tableNumber;
                 int nt = chooseTable();
@@ -795,8 +799,7 @@ void displayQueue(Queue &q)
         {
             clearScreen();
             displayTables();
-            displayQueue(q); // hiển thị queue hiện tại
-            clearScreen();
+            continue;
         }
         else if (act == 0)
         {
@@ -961,6 +964,10 @@ void payment(Queue &q)
     if (n == 0)
     {
         cout << "No orders.\n";
+        cin.ignore();
+        cout << "\nPress Enter to continue...";
+        string _tmp;
+        getline(cin, _tmp);
         return;
     }
     int id;
@@ -997,4 +1004,8 @@ void payment(Queue &q)
     int t = rem.tableNumber;
     if (t >= 1 && t <= NUM_TABLES && !anyOrderForTable(q, t))
         gTableStatus[t - 1] = "Empty";
+    cin.ignore();
+    cout << "\nPress Enter to continue...";
+    string _tmp;
+    getline(cin, _tmp);
 }
