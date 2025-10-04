@@ -61,25 +61,32 @@ int main()
         }
         case 6:
         {
-            cout << "1.Sort menu ascending      2.Sort menu descending      3.Update status     0.Back\n";
-            cout << "Choice: ";
-            int n;
-            cin >> n;
-            cin.ignore();
-            if (n == 1)
-            {
-                sortMenuAscending();
+            while (true)
+            {   
+                clearScreen();
+                cout << "1.Sort menu ascending      2.Sort menu descending      3.Update status     0.Back\n";
+                cout << "Choice: ";
+                int n;
+                cin >> n;
+                cin.ignore();
+                if (n == 1)
+                {
+                    sortMenuAscending();
+                    continue;
+                }
+                else if (n == 2)
+                {
+                    sortMenuDescending();
+                    continue;
+                }
+                else if (n == 3)
+                {
+                    updateFoodStatus();
+                    continue;
+                }
+                else
+                    break;
             }
-            else if (n == 2)
-            {
-                sortMenuDescending();
-            }
-            else if (n == 3)
-            {
-                updateFoodStatus();
-            }
-            else
-                break;
         }
         case 0:
         {
