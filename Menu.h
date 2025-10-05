@@ -182,3 +182,55 @@ void updateFoodStatus() {
     displayMenu();
     enter();
 }
+
+// tìm kiếm string search
+bool containsNaive(const string &text, const string &pattern) {
+    if (pattern.empty()) return false;
+    int n = text.length();
+    int m = pattern.length();
+
+    // Duyệt qua từng vị trí của text
+    for (int i = 0; i <= n - m; i++) {
+        int j = 0;
+        while (j < m && tolower(text[i + j]) == tolower(pattern[j])) {
+            j++;
+        }
+        if (j == m) return true; // tìm thấy chuỗi con
+    }
+    return false;
+}
+
+// ======================= SEARCH FOOD BY NAME ===========================
+void searchFoodNaive() {
+    cout << "\x1b[36m\n================ SEARCH FOOD ================\x1b[0m\n";
+    cout << "Enter keyword to search: ";
+    string keyword;
+    getline(cin, keyword);
+
+    bool found = false;
+    cout << "\x1b[35m\nResults for keyword: " << keyword << "\x1b[0m\n";
+    cout << "\x1b[35mNo\tFood Name\t\tPrice\t\tPrep(second)\tStatus\x1b[0m\n";
+
+    for (int i = 0; i < menuSize; i++) {
+        if (containsNaive(menuList[i].foodName, keyword)) {
+            found = true;
+            cout << "\x1b[33m" << i + 1 << ".\x1b[0m\t";
+            cout << menuList[i].foodName << "\t\t";
+            cout << "\x1b[34m" << formatPrice(menuList[i].price) << "\x1b[0m\t\t";
+            cout << menuList[i].prepTime << "\t\t";
+            if (menuList[i].available)
+                cout << "\x1b[32mAvailable\x1b[0m";
+            else
+                cout << "\x1b[31mSold out\x1b[0m";
+            cout << "\n";
+        }
+    }
+
+    if (!found) {
+        cout << "\x1b[31mNo food found with keyword: \x1b[33m" << keyword << "\x1b[0m\n";
+    }
+
+    cout << "\x1b[36m=============================================================\x1b[0m\n";
+    enter();
+}
+

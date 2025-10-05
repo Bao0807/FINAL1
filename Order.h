@@ -27,4 +27,5 @@ struct Order
     string tableStatus = "Empty";
     bool isOnHold = false;
     bool progressLogged = false;
+    int totalRemainingTime; //tổng thời gian còn lại
 };

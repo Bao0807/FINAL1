@@ -16,7 +16,7 @@ int main()
         cout << "\n===== RESTAURANT =====\n";
         cout << "1. Add\n";
         cout << "2. Display\n";
-        cout << "3. Tim kiem theo so ban\n";
+        cout << "3. Search\n";
         cout << "4. Doanh thu & so luong\n";
         cout << "5. Thanh toan (hoi so ban -> chon hinh thuc)\n";
         cout << "6. Update Menu\n";
@@ -42,11 +42,20 @@ int main()
             break;
         }
         case 3:
-        {
-            cout << "Enter table number: ";
-            int tb;
-            cin >> tb;
-            searchByTable(q, tb);
+        {   
+            cout << "1.Search Food    2.Search Customer    0.Back\n";
+            cout << "Choice: ";
+            int n ; cin >> n;
+            cin.ignore();
+            if(n == 1) searchFoodNaive();
+            // else if(n == 2){
+
+            // }
+            // else break;
+            // cout << "Enter table number: ";
+            // int tb;
+            // cin >> tb;
+            // searchByTable(q, tb);
             break;
         }
         case 4:
@@ -64,7 +73,7 @@ int main()
             while (true)
             {   
                 clearScreen();
-                cout << "1.Sort menu ascending      2.Sort menu descending      3.Update status     0.Back\n";
+                cout << "1.Sort menu ascending    2.Sort menu descending    3.Update status   0.Back\n";
                 cout << "Choice: ";
                 int n;
                 cin >> n;

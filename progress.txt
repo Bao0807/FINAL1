@@ -60,3 +60,21 @@ OrderID: 11 | Customer: bao | Table: 3 | Status: Cooking
 OrderID: 11 | Customer: bao | Table: 2 | Status: Cooking
  - Com Tam Sai Gon x3 [wait] remaining=30m
 -------------------------------------
+OrderID: 11 | Customer: bao | Table: 2 | Status: Cooking
+ - Pho Ha Noi x3 [wait] remaining=36m
+ - Pho Kho Gia Lai x3 [wait] remaining=36m
+-------------------------------------
+OrderID: 13 | Customer: bao | Table: 3 | Status: Cooking
+ - Pho Kho Gia Lai x3 [wait] remaining=36m
+ - Com Tam Sai Gon x4 [wait] remaining=40m
+-------------------------------------
+OrderID: 12 | Customer: bao | Table: 3 | Status: Cooking
+ - Pho Kho Gia Lai x3 [wait] remaining=36m
+ - Bun Cha Ha Noi x4 [wait] remaining=64m
+-------------------------------------
+OrderID: 12 | Customer: bao | Table: 3 | Status: Cooking
+ - Bun Dau Mam Tom x3 [wait] remaining=45m
+ - Banh Xeo x3 [wait] remaining=42m
+-------------------------------------
+OrderID: 12 | Customer: bao | Table: 3 | Status: Cooking | Remaining(total): 66s
+-------------------------------------

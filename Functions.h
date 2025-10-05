@@ -493,7 +493,6 @@ void viewRevenueSummary()
     for (int i = 0; i < cc; i++)
         cout << " - " << cnt[i].name << ": " << cnt[i].qty << "\n";
     cout << "=======================\n";
-    cin.ignore();
     enter();
 }
 
@@ -532,6 +531,7 @@ void addOrder(Queue &q, int &idCounter)
         if (!sel.available || sel.price == 0)
         {
             cout << "Invalid choice or sold out.\n";
+            enter();
             continue;
         }
 
