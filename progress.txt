@@ -78,3 +78,7 @@ OrderID: 12 | Customer: bao | Table: 3 | Status: Cooking
 -------------------------------------
 OrderID: 12 | Customer: bao | Table: 3 | Status: Cooking | Remaining(total): 66s
 -------------------------------------
+OrderID: 13 | Customer: bao | Table: 3 | Status: Cooking
+ - Com Tam Sai Gon x3 [wait] remaining=30m
+ - Pho Kho Gia Lai x4 [wait] remaining=48m
+-------------------------------------
