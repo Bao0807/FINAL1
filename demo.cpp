@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Functions.h"
+#include "auth.h"
 using namespace std;
 
 int main()
@@ -8,6 +9,8 @@ int main()
     int choice;
     int idCounter = getLastOrderID();
     initTables();
+
+    login();
 
     do
     {
@@ -29,6 +32,11 @@ int main()
 
         switch (choice)
         {
+        case 0:
+        {
+            cout << "Exit.\n";
+            break;
+        }
         case 1:
         {
             addOrder(q, idCounter);
@@ -87,14 +95,13 @@ int main()
                 else
                     break;
             }
-        }
-        case 0:
-        {
-            cout << "Exit.\n";
             break;
         }
+
         default:
             cout << "Invalid.\n";
+            cin.ignore(); 
+            cin.get();
         }
 
     } while (choice != 0);
