@@ -236,7 +236,7 @@ void addOrder(Queue &q, int &idCounter)
     {
         clearScreen();
         cout << "Added order ID " << f->id << "\n";
-        cout << "Actions after Add: 1-Delete  2-Edit  3-Temp bill (COOK)  0-Back\nChoose: ";
+        cout << "Tuy chinh don hien tai: 1-Xoa  2-Sua  3-Xuat hoa don tam thoi (Nau)  0-Quay lai\nChon: ";
         int act;
         if (!(cin >> act))
         {
@@ -252,9 +252,9 @@ void addOrder(Queue &q, int &idCounter)
             Order rem;
             if (removeOrderByID(q, f->id, rem))
             {
-                cout << "Deleted.\n";
+                cout << "Xoa.\n";
             }
-            else cout << "Delete failed.\n";
+            else cout << "Xoa that bai.\n";
             break;
         }
         else if (act == 2)
@@ -317,7 +317,7 @@ void displayQueue(Queue &q)
             }
         }
 
-        cout << "Actions: 1-Delete  2-Edit  3-Temp bill  4-Reset  0-Back\nChoose: ";
+        cout << "Tuy chinh don: 1-Xoa  2-Sua  3-Xuat hoa don tam thoi (Nau)  0-Quay lai\nChon: ";
         int act;
         if (!(cin >> act))
         {

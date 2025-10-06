@@ -173,73 +173,80 @@ void saveBillToFile(const Order &o)
 
 void payment(Queue &q)
 {
+    clearScreen();
+    cout << "\x1b[36m===== THANH TOAN HOA DON =====\x1b[0m\n";
+    displayTables();
+
     int tableNo;
-    cout << "Enter table number: ";
+    cout << "Nhap so ban can thanh toan: ";
     cin >> tableNo;
+
     if (tableNo < 1 || tableNo > NUM_TABLES)
     {
-        cout << "Invalid table.\n";
+        cout << "Ban khong hop le!\n";
         return;
     }
-    int ids[32];
-    int n = 0;
-    cout << "Orders:\n";
+
+    // Tim don hang theo ban
+    Order *target = nullptr;
     for (int i = 0; i < q.count; i++)
     {
         int idx = (q.front + i) % MAX;
         Order &o = q.orders[idx];
         if (o.tableNumber == tableNo)
         {
-            cout << " - ID " << o.id << " [" << o.status << "] Total=" << formatPrice(o.total) << "\n";
-            if (n < 32)
-                ids[n++] = o.id;
-        }
-    }
-    if (n == 0)
-    {
-        cout << "No orders.\n";
-        cin.ignore();
-        cout << "\nPress Enter to continue...";
-        string _tmp;
-        getline(cin, _tmp);
-        return;
-    }
-    int id;
-    cout << "Choose Order ID to pay: ";
-    cin >> id;
-    bool ok = false;
-    for (int i = 0; i < n; i++)
-        if (ids[i] == id)
-        {
-            ok = true;
+            target = &o;
             break;
         }
-    if (!ok)
-    {
-        cout << "ID not in this table.\n";
-        return;
     }
-    cout << "Payment method (1-Cash, 2-QR, 3-Card): ";
-    int pm;
-    cin >> pm;
-    (void)pm;
 
-    Order rem;
-    if (!removeOrderByID(q, id, rem))
+    if (target == nullptr)
     {
-        cout << "Not found.\n";
+        cout << "Khong co don hang nao cho ban nay.\n";
+        cin.ignore();
+        cout << "\nNhan Enter de tiep tuc...";
+        string tmp;
+        getline(cin, tmp);
         return;
     }
-    rem.status = "Completed";
-    printBill(rem);
-    saveBillToFile(rem);
-    updateRevenue(rem);
-    cout << "Payment done & saved.\n";
-    int t = rem.tableNumber;
-    if (t >= 1 && t <= NUM_TABLES && !anyOrderForTable(q, t))
-        gTableStatus[t - 1] = "Empty";
+
+    cout << "\nBan " << tableNo << " co don hang:\n";
+    cout << " - ID: " << target->id
+         << " | Ten khach: " << target->customerName
+         << " | Tong tien: " << formatPrice(target->total)
+         << " | Trang thai: " << target->status << "\n";
+
+    // Xac nhan
+    cout << "\nXac nhan thanh toan? (y/n): ";
+    char confirm;
+    cin >> confirm;
+
+    if (confirm != 'y' && confirm != 'Y')
+    {
+        cout << "Da huy thanh toan.\n";
+        cin.ignore();
+        enter();
+        return;
+    }
+
+    // Cap nhat & in hoa don
+    target->status = "Completed";
+    printBill(*target);
+    saveBillToFile(*target);
+    updateRevenue(*target);
+    cout << "\x1b[32mThanh toan thanh cong!\x1b[0m\n";
+
+    // Xoa don khoi hang doi
+    Order removed;
+    removeOrderByID(q, target->id, removed);
+
+    // Cap nhat trang thai ban
+    if (!anyOrderForTable(q, tableNo))
+        gTableStatus[tableNo - 1] = "Empty";
+
     cin.ignore();
-    cout << "\nPress Enter to continue...";
-    string _tmp;
-    getline(cin, _tmp);
+    cout << "\nNhan Enter de tiep tuc...";
+    string tmp;
+    getline(cin, tmp);
 }
+

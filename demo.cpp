@@ -21,7 +21,6 @@ int main()
         showMainMenu();
         cin >> choice;
 
-        // Clear screen again so mỗi thao tác được hiển thị trên màn hình sạch
         clearScreen();
 
         switch (choice)
@@ -38,7 +37,6 @@ int main()
         }
         case 2:
         {
-            // Hiển thị toàn bộ đơn trong queue (tiến độ, trạng thái, items)
             displayTables();
             displayQueue(q);
             break;
@@ -50,14 +48,6 @@ int main()
             int n ; cin >> n;
             cin.ignore();
             if(n == 1) searchFoodNaive();
-            // else if(n == 2){
-
-            // }
-            // else break;
-            // cout << "Enter table number: ";
-            // int tb;
-            // cin >> tb;
-            // searchByTable(q, tb);
             break;
         }
         case 4:

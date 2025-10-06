@@ -15,3 +15,6 @@ OrderID: 2 | Total: 360000 | Items: Banh Xeox3
 OrderID: 6 | Total: 240000 | Items: Pho Kho Gia Laix2
 OrderID: 7 | Total: 600000 | Items: Pho Kho Gia Laix5
 OrderID: 10 | Total: 720000 | Items: Pho Kho Gia Laix3, Banh Xeox3
+OrderID: 13 | Total: 480000 | Items: Pho Kho Gia Laix1, Pho Kho Gia Laix3
+OrderID: 14 | Total: 560000 | Items: Bun Dau Mam Tomx4
+OrderID: 17 | Total: 360000 | Items: Pho Kho Gia Laix3
