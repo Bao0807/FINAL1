@@ -64,7 +64,7 @@ struct HashTable {
     void staffList() {
         for (int i = 0; i < k; i++) {
             if (table[i].getSize() > 0) {
-                cout << "B" << i << ": ";
+                cout << "Hash " << i << ": ";
                 for (int j = table[i].getSize() - 1; j >= 0; j--) {
                     Item v = table[i].getItem(j);
                     cout << "[ID: " << v.hash << " - " << v.value <<"] ";
@@ -92,14 +92,13 @@ struct HashTable {
         }
     }
 
+    
     void loadData(){
         add("admin", "admin"); //user mac dinh
         add("nhanvien1", "nhanvien");
         add("0123456789", "admin2");
         add("admin@gmail.com", "admin3");
     }
-
-
 };
 
 void login(){
@@ -109,32 +108,42 @@ void login(){
     string login, pwd;
     optional<string> auth;
 
-    //registeredUsers.staffList();
-    //return;
 
     system("cls");
     cout << "\t\t\x1b[34mHE THONG QUAN LY NHA HANG\t\t\x1b[0m\n\n";
     cout << "Ten tai khoan: \n";
     cout << "Mat khau: \n";
+    cout << "\n\n\x1b[3mMac dinh: admin - admin\nDe xem danh sach ma (ID) nhan vien: nhap admin::list o phan Ten tai khoan\n\x1b[0m\n\x1b[5F";
 
     while (true){
         cout << "\x1b[2F\x1b[15C";
         cin >> login;
         cout << "\x1b[10C";
+        
+        if (login == "admin::list"){
+            system("cls");
+            cout << "\t\tSTAFF ID LIST\t\t\n";
+            registeredUsers.staffList();
+            cout << "\nNhan phim bat ki de tiep tuc.\n";
+            cin.ignore();
+            cin.get();
+            return;
+        }
+
         cin >> pwd;
         cout << "\n";
-
+        
         auth = registeredUsers.getValue(login);
 
         if (auth && auth.value() == pwd){
-            cout << "\x1b[32mLogin thanh cong! Nhan phim bat ky de tiep tuc.\x1b[0m\n";
+            cout << "\x1b[32mLogin thanh cong! Nhan phim bat ky de tiep tuc.\x1b[0m";
             cin.ignore();
             cin.get();
-            break;
+            return;
         }
         else{
-            cout << "\x1b[31mTai khoan hoac mat khau sai, vui long thu lai.\x1b[0m\n";
-            cout << "\x1b[2F\x1b[15C";
+            cout << "\x1b[31mTai khoan hoac mat khau sai, vui long thu lai.\x1b[0m";
+            cout << "\x1b[1F\x1b[15C";
         }
     }
 }
