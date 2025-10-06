@@ -3,6 +3,8 @@
 #include "auth.h"
 using namespace std;
 
+void showMainMenu();
+
 int main()
 {
     Queue q;
@@ -16,15 +18,7 @@ int main()
     {
         clearScreen();
 
-        cout << "\n===== RESTAURANT =====\n";
-        cout << "1. Add\n";
-        cout << "2. Display\n";
-        cout << "3. Search\n";
-        cout << "4. Doanh thu & so luong\n";
-        cout << "5. Thanh toan (hoi so ban -> chon hinh thuc)\n";
-        cout << "6. Update Menu\n";
-        cout << "0. EXIT\n";
-        cout << "Choice: ";
+        showMainMenu();
         cin >> choice;
 
         // Clear screen again so mỗi thao tác được hiển thị trên màn hình sạch

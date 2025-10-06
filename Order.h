@@ -28,3 +28,22 @@ struct Order
     bool progressLogged = false;
     int totalRemainingTime; //tổng thời gian còn lại
 };
+
+void showMainMenu()
+{
+    cout << "\x1b[36m"; // Mau cyan
+    cout << "\n==============================================\n";
+    cout << "       N H A   H A N G   V I E T   N A M\n";
+    cout << "==============================================\x1b[0m\n";
+
+    cout << "\x1b[33m1.\x1b[0m Them don hang (Order moi)\n";
+    cout << "\x1b[33m2.\x1b[0m Hien thi danh sach don hang hien tai\n";
+    cout << "\x1b[33m3.\x1b[0m Tra cuu don hang theo ban\n";
+    cout << "\x1b[33m4.\x1b[0m Bao cao doanh thu & so luong mon ban ra\n";
+    cout << "\x1b[33m5.\x1b[0m Thanh toan hoa don (chon ban & hinh thuc)\n";
+    cout << "\x1b[33m6.\x1b[0m Cap nhat thuc don (Menu mon an)\n";
+    cout << "\x1b[31m0.\x1b[0m Thoat chuong trinh\n";
+
+    cout << "\x1b[36m----------------------------------------------\x1b[0m\n";
+    cout << "\x1b[32mNhap lua chon cua ban: \x1b[0m";
+}
