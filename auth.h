@@ -33,7 +33,6 @@ struct ItemList {
 };
 
 struct HashTable {
-    int n = 7;
     int k = 7;
     ItemList table[10] = {};
     
@@ -62,6 +61,19 @@ struct HashTable {
         return {};
     }
     
+    void staffList() {
+        for (int i = 0; i < k; i++) {
+            if (table[i].getSize() > 0) {
+                cout << "B" << i << ": ";
+                for (int j = table[i].getSize() - 1; j >= 0; j--) {
+                    Item v = table[i].getItem(j);
+                    cout << "[ID: " << v.hash << " - " << v.value <<"] ";
+                }
+                cout << endl;
+            }
+        }
+    }
+
     void add(string key, string value) {
         int h = hash(key);
         int ind = h % k;
@@ -80,32 +92,24 @@ struct HashTable {
         }
     }
 
-    void print() {
-        for (int i = 0; i < k; i++) {
-            if (table[i].getSize() > 0) {
-                cout << "Bucket " << i << ": ";
-                for (int j = table[i].getSize() - 1; j >= 0; j--) {
-                    Item v = table[i].getItem(j);
-                    cout << "[hash=" << v.hash << " -> " << v.value;
-                }
-                cout << endl;
-            }
-        }
+    void loadData(){
+        add("admin", "admin"); //user mac dinh
+        add("nhanvien1", "nhanvien");
+        add("0123456789", "admin2");
+        add("admin@gmail.com", "admin3");
     }
+
 
 };
 
 void login(){
     HashTable registeredUsers;
-    registeredUsers.add("admin", "admin"); //user mac dinh
-    registeredUsers.add("nhanvien1", "nhanvien");
-    registeredUsers.add("0123456789", "admin");
-    registeredUsers.add("admin@gmail.com", "admin");
+    registeredUsers.loadData();
     
     string login, pwd;
     optional<string> auth;
 
-    //registeredUsers.print();
+    //registeredUsers.staffList();
     //return;
 
     system("cls");
