@@ -36,8 +36,8 @@ void showMainMenu()
     cout << "       N H A   H A N G   V I E T   N A M\n";
     cout << "==============================================\x1b[0m\n";
 
-    cout << "\x1b[33m1.\x1b[0m Them don hang (Order moi)\n";
-    cout << "\x1b[33m2.\x1b[0m Hien thi danh sach don hang hien tai\n";
+    cout << "\x1b[33m1.\x1b[0m Them don hang\n";
+    cout << "\x1b[33m2.\x1b[0m Hien thi (ban & queue)\n";
     cout << "\x1b[33m3.\x1b[0m Tra cuu don hang theo ban\n";
     cout << "\x1b[33m4.\x1b[0m Bao cao doanh thu & so luong mon ban ra\n";
     cout << "\x1b[33m5.\x1b[0m Thanh toan hoa don (chon ban & hinh thuc)\n";

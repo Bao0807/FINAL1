@@ -54,7 +54,7 @@ string formatPrice(long long price){ // edit
 
 void displayMenu(){
     cout << "\x1b[36m\n================================== MENU ==================================\x1b[0m\n";
-    cout << "\x1b[35mNo\tFood Name\t\tPrice\t\tPrep(second)\tStatus\x1b[0m\n";
+    cout << "\x1b[35mSTT\tMon An\t\t\tGia Tien\tThoi gian(s)\tTrang Thai\x1b[0m\n";
     for (int i = 0; i < menuSize; i++){
         cout << "\x1b[33m" << i + 1 << ".\x1b[0m\t";
         cout << menuList[i].foodName << "\t\t";

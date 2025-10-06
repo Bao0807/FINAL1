@@ -73,7 +73,7 @@ void advanceTime(Queue &q, int seconds)
     for (int i = 0; i < q.count; ++i)
     {
         int idx = (q.front + i) % MAX;
-        if (q.orders[idx].status == "Cooking")
+        if (q.orders[idx].status == "Nau")
         {
             targetIdx = idx;
             break;
@@ -88,7 +88,7 @@ void advanceTime(Queue &q, int seconds)
         if (o.totalRemainingTime < 0) o.totalRemainingTime = 0;
     }
 
-    if (o.totalRemainingTime == 0 && o.status == "Cooking")
+    if (o.totalRemainingTime == 0 && o.status == "Nau")
     {
         o.status = "Ready";
         saveBillToFile(o);
@@ -99,9 +99,9 @@ void advanceTime(Queue &q, int seconds)
         {
             int idx2 = (q.front + j) % MAX;
             Order &next = q.orders[idx2];
-            if (next.status == "Wait")
+            if (next.status == "Cho")
             {
-                next.status = "Cooking";
+                next.status = "Nau";
                 cout << "Order ID " << next.id << " is now Cooking.\n";
                 break;
             }
@@ -145,7 +145,7 @@ const char *itemState(const OrderDetail &d)
     if (d.remainingTime <= 0)
         return "done";
     if (d.remainingTime >= full)
-        return "wait";
+        return "Cho";
     return "cook";
 }
 
@@ -267,16 +267,16 @@ void addOrder(Queue &q, int &idCounter)
             for (int i = 0; i < q.count; i++)
             {
                 int idx = (q.front + i) % MAX;
-                if (q.orders[idx].status == "Cooking")
+                if (q.orders[idx].status == "Nau")
                 {
                     cookingExists = true;
                     break;
                 }
             }
             if (cookingExists)
-                f->status = "Wait";
+                f->status = "Cho";
             else
-                f->status = "Cooking";
+                f->status = "Nau";
 
             printBill(*f);
             cout << "[Temp bill] -> " << f->status << " & progress logged.\n";
@@ -354,16 +354,16 @@ void displayQueue(Queue &q)
                 for (int i = 0; i < q.count; i++)
                 {
                     int idx = (q.front + i) % MAX;
-                    if (q.orders[idx].status == "Cooking")
+                    if (q.orders[idx].status == "Nau")
                     {
                         cookingExists = true;
                         break;
                     }
                 }
                 if (cookingExists)
-                    f->status = "Wait";
+                    f->status = "Cho";
                 else
-                    f->status = "Cooking";
+                    f->status = "Nau";
 
                 printBill(*f);
                 cout << "[Temp bill] -> " << f->status << "\n";
@@ -494,7 +494,7 @@ void deleteOrder(Queue &q)
         return;
     }
 
-    if (f->status == "Cooking" || f->status == "Ready")
+    if (f->status == "Nau" || f->status == "Ready")
     {
         cout << "Cannot delete order while it is being cooked or already done.\n";
         return;
