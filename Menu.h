@@ -10,6 +10,19 @@ struct MenuItem {
     int prepTime; // second for one portion
 };
 
+string formatPrice(long long price);
+void displayMenu();
+MenuItem getMenuItem(string input);
+bool updateAvailability(const string &food, bool status);
+void sortMenuAscending();
+void sortMenuDescending();
+void updateFoodStatus();
+bool containsNaive(const string &text, const string &pattern);
+void searchFoodNaive();
+
+
+
+
 void enter(){
     cout << "\nPress Enter to continue...";
     string _tmp;
@@ -96,7 +109,6 @@ bool updateAvailability(const string &food, bool status){
     return false;
 }
 
-// ======================= SORT MENU BY PRICE ===========================
 void sortMenuAscending() { // Sắp xếp tăng dần theo giá
     for (int i = 1; i < menuSize; i++) {
         MenuItem key = menuList[i];
