@@ -160,6 +160,7 @@ void addOrder(Queue &q, int &idCounter)
     clearScreen();
     Order o;
     o.id = ++idCounter;
+
     cout << "Customer name: ";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     getline(cin, o.customerName);
@@ -217,6 +218,7 @@ void addOrder(Queue &q, int &idCounter)
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
     } while (more == 'y' || more == 'Y');
 
+    // Tổng thời gian của đơn
     o.totalRemainingTime = 0;
     for (int j = 0; j < o.itemCount; j++)
         o.totalRemainingTime += o.items[j].remainingTime;
@@ -233,51 +235,33 @@ void addOrder(Queue &q, int &idCounter)
 
     startTimer(&q);
 
-    cout << "Added order ID " << o.id << "\n";
-    Order *f = &q.orders[q.rear];
+    cout << "\x1b[32mAdded order ID " << o.id << " for table " << o.tableNumber << "\x1b[0m\n";
+    cout << "Do you want to print temporary bill (start cooking)? (y/n): ";
 
-    while (true)
+    char choice;
+    cin >> choice;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    if (choice == 'y' || choice == 'Y')
     {
-        clearScreen();
-        cout << "Added order ID " << f->id << "\n";
-        cout << "Tuy chinh don hien tai: 1-Xoa  2-Sua  3-Xuat hoa don tam thoi (Nau)  0-Quay lai\nChon: ";
-        int act;
-        if (!(cin >> act))
-        {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid.\n";
-            continue;
-        }
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        Order *f = &q.orders[q.rear];
+        if (hasCooking(q))
+            f->status = "Cho";
+        else
+            f->status = "Nau";
 
-        if (act == 1)
-        {
-            deleteOrder(q);
-            cin.ignore();
-            enter();
-        }
-        else if (act == 2)
-        {
-            editOrder(q);
-        }
-        else if (act == 3)
-        {
-            // Dùng helper thay cho lặp lại
-            if (hasCooking(q)) f->status = "Cho";
-            else f->status = "Nau";
-
-            printBill(*f);
-            cout << "[Temp bill] -> " << f->status << " & progress logged.\n";
-            cout << "\nPress Enter to continue...";
-            string _tmp;
-            getline(cin, _tmp);
-            startTimer(&q);
-        }
-        else if (act == 0) break;
-        else cout << "Invalid.\n";
+        printBill(*f);
+        cout << "[Temp bill] -> " << f->status << " & progress logged.\n";
+        startTimer(&q);
     }
+    else
+    {
+        cout << "Order saved as Pending.\n";
+    }
+
+    enter();
 }
+
 
 // ===== Display Queue =====
 void displayQueue(Queue &q)
@@ -356,96 +340,116 @@ void displayQueue(Queue &q)
 void editOrder(Queue &q)
 {
     int id;
-    cout << "Enter ID to edit: ";
+    cout << "Nhap ID can sua: ";
     cin >> id;
+
     Order *f = findOrderByID(q, id);
     if (!f)
     {
-        cout << "Not found.\n";
+        cout << "Khong tim thay don hang.\n";
         return;
     }
-    cout << "Current customer: " << f->customerName << "\n";
-    cout << "New name (or '.' keep): ";
+
+    // --- Cho phep doi ten / doi ban bat ky luc nao ---
+    cout << "Ten hien tai: " << f->customerName << "\n";
+    cout << "Nhap ten moi (hoac '.' de giu nguyen): ";
     string name;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     getline(cin, name);
     if (name != ".") f->customerName = name;
 
-    cout << "Change table? (y/n): ";
-    char c;
-    cin >> c;
+    cout << "Doi ban? (y/n): ";
+    char c; cin >> c;
     if (c == 'y' || c == 'Y')
     {
         int old = f->tableNumber;
         int nt = chooseTable();
         f->tableNumber = nt;
         gTableStatus[nt - 1] = "Full";
+
         bool hasOther = false;
         for (int i = 0; i < q.count; i++)
         {
             int idx = (q.front + i) % MAX;
             if (q.orders[idx].id != f->id && q.orders[idx].tableNumber == old)
-            {
-                hasOther = true;
-                break;
-            }
+            { hasOther = true; break; }
         }
         if (!hasOther && old >= 1 && old <= NUM_TABLES)
             gTableStatus[old - 1] = "Empty";
     }
 
-    cout << "Add more items? (y/n): ";
-    char c2;
-    cin >> c2;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    // --- Khong cho them mon neu dang Nau/Ready ---
+    if (f->status == "Nau" || f->status == "Ready")
+    {
+        cout << "\nDon dang '" << f->status << "', khong the them mon moi.\n";
+        cout << "Chi duoc phep doi ten/doi ban.\n";
+        return;
+    }
+
+    // --- Chi khi Pending/Cho moi cho them mon ---
+    cout << "Them mon moi? (y/n): ";
+    char c2; cin >> c2;
     if (c2 == 'y' || c2 == 'Y')
     {
-        char more = 'n';
-        do
-        {
-            if (f->itemCount >= MAX_ITEMS)
-            {
-                cout << "Reached max items!\n";
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        char more = 'y';
+        do {
+            if (f->itemCount >= MAX_ITEMS) {
+                cout << "Reached MAX_ITEMS, khong the them mon.\n";
                 break;
             }
+
             displayMenu();
-            cout << "Choose food (number or name): ";
-            string in;
-            getline(cin, in);
-            MenuItem sel = getMenuItem(in);
+            cout << "Nhap ten mon hoac so thu tu: ";
+            string inputFood;
+            getline(cin, inputFood);
+            MenuItem sel = getMenuItem(inputFood);
+
             if (!sel.available || sel.price == 0)
             {
-                cout << "Invalid.\n";
+                cout << "Lua chon khong hop le hoac mon het hang.\n";
+                cout << "Them tiep? (y/n): ";
+                cin >> more; cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 continue;
             }
+
             OrderDetail d;
             d.foodName = sel.foodName;
-            cout << "Quantity: ";
-            if (!(cin >> d.quantity) || d.quantity <= 0)
-            {
+            cout << "So luong: ";
+            if (!(cin >> d.quantity) || d.quantity <= 0) {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << "Invalid quantity.\n";
+                cout << "So luong khong hop le.\n";
+                cout << "Them tiep? (y/n): ";
+                cin >> more; cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 continue;
             }
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
             d.price = sel.price;
             d.subtotal = d.price * d.quantity;
             d.prepTime = sel.prepTime;
             d.remainingTime = sel.prepTime * d.quantity;
+
+            // them vao don
             f->items[f->itemCount++] = d;
             f->total += d.subtotal;
-            cout << "Add more? (y/n): ";
-            cin >> more;
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+            cout << "Them tiep? (y/n): ";
+            cin >> more; cin.ignore(numeric_limits<streamsize>::max(), '\n');
         } while (more == 'y' || more == 'Y');
 
+        // >>> CẬP NHẬT LẠI REMAINING SAU KHI THÊM MON <<<
         f->totalRemainingTime = 0;
-        for (int j = 0; j < f->itemCount; j++)
+        for (int j = 0; j < f->itemCount; ++j)
             f->totalRemainingTime += f->items[j].remainingTime;
     }
-    cout << "Edit done.\n";
+
+    cout << "Da cap nhat don hang.\n";
 }
+
+
+
 
 // ===== Delete Order =====
 void deleteOrder(Queue &q)
