@@ -63,28 +63,13 @@ bool removeOrderByID(Queue &q, int id, Order &out)
 
 void printBill(const Order &o)
 {
-    // build table string (bàn chính + các bàn được merge (gTableOwner == o.id))
-    int tables[NUM_TABLES];
-    int tcount = 0;
-
-    ostringstream tboss;
-    for (int i = 0; i < tcount; ++i)
-    {
-        if (i)
-            tboss << " + ";
-        tboss << tables[i];
-    }
-    string tableStr = tboss.str();
-    if (tableStr.empty())
-        tableStr = to_string(o.tableNumber);
-
     // Header (ANSI colors)
     cout << "\x1b[36m\n=================================================================\n"
          << "                          RESTAURANT BILL           \n"
          << "=================================================================\n\x1b[0m";
     cout << "OrderID:\x1b[33m" << o.id << "\x1b[0m\n";
     cout << "Customer:\x1b[32m" << o.customerName << "\x1b[0m\n";
-    cout << "Table:\x1b[33m" << tableStr << "\x1b[0m\n";
+    cout << "Table:\x1b[33m" << o.tableNumber << "\x1b[0m\n";
     cout << "-----------------------------------------------------------------\n";
     cout << "\x1b[35mNo\tFood Name\t\tQuantity\tPrice\x1b[0m\n";
 
@@ -98,11 +83,11 @@ void printBill(const Order &o)
     cout << "\x1b[31mTOTAL: " << formatPrice(o.total) << " VND\x1b[0m\n";
     cout << "Status: " << o.status << "\n";
 
-    // Progress section: CHỈ MỘT DÒNG — tổng thời gian còn lại
+    // Progress section: chỉ 1 dòng tổng thời gian còn lại
     cout << "\n\x1b[33mPROGRESS: \x1b[0m";
     if (o.itemCount == 0)
     {
-        cout << "  (No items)\n";
+        cout << "(No items)\n";
     }
     else
     {
@@ -115,48 +100,22 @@ void printBill(const Order &o)
     cout << "\x1b[36m=================================================================\x1b[0m\n";
 }
 
-// thay đổi saveBillToFile để ghi chuỗi bàn (đã merge) rõ ràng
+// Ghi bill ra file, KHÔNG còn merge bàn nữa
 void saveBillToFile(const Order &o)
 {
-    // build table string (không dùng vector)
-    int tables[NUM_TABLES];
-    int tcount = 0;
-    if (o.tableNumber >= 1 && o.tableNumber <= NUM_TABLES)
-        tables[tcount++] = o.tableNumber;
-    for (int t = 0; t < NUM_TABLES; ++t)
-    {
-        if (gTableOwner[t] == o.id)
-        {
-            int tn = t + 1;
-            bool already = false;
-            for (int k = 0; k < tcount; ++k)
-                if (tables[k] == tn)
-                {
-                    already = true;
-                    break;
-                }
-            if (!already)
-                tables[tcount++] = tn;
-        }
-    }
-    ostringstream oss;
-    for (int i = 0; i < tcount; ++i)
-    {
-        if (i)
-            oss << " + ";
-        oss << tables[i];
-    }
-    string tableStr = oss.str();
-    if (tableStr.empty())
-        tableStr = to_string(o.tableNumber);
-
     ofstream fout("bill.txt", ios::app);
+    if (!fout)
+    {
+        cerr << "Cannot open bill.txt\n";
+        return;
+    }
+
     fout << "=====================================\n";
     fout << "           RESTAURANT BILL           \n";
     fout << "=====================================\n";
     fout << "OrderID:   " << o.id << "\n";
     fout << "Customer:  " << o.customerName << "\n";
-    fout << "Table:     " << tableStr << "\n";
+    fout << "Table:     " << o.tableNumber << "\n";
     fout << "-------------------------------------\n";
     fout << "Food        Qty     Price\n";
     fout << "-------------------------------------\n";
@@ -170,6 +129,7 @@ void saveBillToFile(const Order &o)
     fout << "=====================================\n\n";
     fout.close();
 }
+
 
 void payment(Queue &q)
 {

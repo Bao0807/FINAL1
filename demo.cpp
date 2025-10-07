@@ -42,12 +42,20 @@ int main()
             break;
         }
         case 3:
-        {   
+        {
             cout << "1.Search Food    2.Search Customer    0.Back\n";
             cout << "Choice: ";
-            int n ; cin >> n;
+            int n;
+            cin >> n;
             cin.ignore();
-            if(n == 1) searchFoodNaive();
+            if (n == 1){
+                searchFoodNaive();
+            }
+            else if (n == 2)
+            {
+                searchCustomer(q);
+                enter();
+            }
             break;
         }
         case 4:
@@ -63,7 +71,7 @@ int main()
         case 6:
         {
             while (true)
-            {   
+            {
                 clearScreen();
                 cout << "1.Sort menu ascending    2.Sort menu descending    3.Update status   0.Back\n";
                 cout << "Choice: ";
@@ -93,7 +101,7 @@ int main()
 
         default:
             cout << "Invalid.\n";
-            cin.ignore(); 
+            cin.ignore();
             cin.get();
         }
 

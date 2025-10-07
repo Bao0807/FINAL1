@@ -17,8 +17,31 @@ using namespace std;
 // ===== timer globals =====
 thread g_timerThread;
 atomic<bool> g_timerRunning(false);
-int g_secondsPer_minute = 60;
 Queue *g_queuePtr = nullptr;
+
+// ===== Helpers dùng chung =====
+
+// Có đơn đang "Nau" không?
+bool hasCooking(Queue &q)
+{
+    for (int i = 0; i < q.count; ++i)
+    {
+        int idx = (q.front + i) % MAX;
+        if (q.orders[idx].status == "Nau") return true;
+    }
+    return false;
+}
+
+// In 1 dòng tóm tắt đơn hàng (dùng lại ở display/search)
+void printOrderRow(const Order &o)
+{
+    cout << "OrderID: " << o.id
+         << " | Name: " << o.customerName
+         << " | Table: " << o.tableNumber
+         << " | Status: " << o.status
+         << " | Total: " << formatPrice(o.total)
+         << " | Remain: " << o.totalRemainingTime << "s\n";
+}
 
 // ===== Declarations =====
 string formatPrice(long long price);
@@ -26,7 +49,6 @@ int getLastOrderID();
 
 Order *findOrderByID(Queue &q, int id);
 bool removeOrderByID(Queue &q, int id, Order &out);
-const char *itemState(const OrderDetail &d);
 
 void addOrder(Queue &q, int &idCounter);
 void displayQueue(Queue &q);
@@ -39,8 +61,7 @@ void enter();
 // ===== Timer =====
 void startTimer(Queue *q)
 {
-    if (g_timerRunning.load())
-        return;
+    if (g_timerRunning.load()) return;
     g_queuePtr = q;
     g_timerRunning.store(true);
     g_timerThread = thread([]()
@@ -56,11 +77,9 @@ void startTimer(Queue *q)
 
 void stopTimer()
 {
-    if (!g_timerRunning.load())
-        return;
+    if (!g_timerRunning.load()) return;
     g_timerRunning.store(false);
-    if (g_timerThread.joinable())
-        g_timerThread.join();
+    if (g_timerThread.joinable()) g_timerThread.join();
 }
 
 // ===== advanceTime =====
@@ -91,10 +110,7 @@ void advanceTime(Queue &q, int seconds)
     if (o.totalRemainingTime == 0 && o.status == "Nau")
     {
         o.status = "Ready";
-        saveBillToFile(o);
-        cout << "Order ID " << o.id << " finished -> saved as Ready.\n";
-
-        // Chuyển đơn Wait đầu tiên sang Cooking
+        // Khi xong, tự động chuyển đơn "Cho" đầu tiên sang "Nau"
         for (int j = 0; j < q.count; ++j)
         {
             int idx2 = (q.front + j) % MAX;
@@ -102,13 +118,13 @@ void advanceTime(Queue &q, int seconds)
             if (next.status == "Cho")
             {
                 next.status = "Nau";
-                cout << "Order ID " << next.id << " is now Cooking.\n";
                 break;
             }
         }
     }
 }
 
+// ===== getLastOrderID =====
 int getLastOrderID()
 {
     ifstream fin("bill.txt");
@@ -120,33 +136,22 @@ int getLastOrderID()
         if (line.rfind("OrderID:", 0) == 0)
         {
             int id = atoi(line.c_str() + 8);
-            if (id > last)
-                last = id;
+            if (id > last) last = id;
         }
     }
     fin.close();
     return last;
 }
 
+// ===== findOrderByID =====
 Order *findOrderByID(Queue &q, int id)
 {
     for (int i = 0; i < q.count; i++)
     {
         int idx = (q.front + i) % MAX;
-        if (q.orders[idx].id == id)
-            return &q.orders[idx];
+        if (q.orders[idx].id == id) return &q.orders[idx];
     }
     return nullptr;
-}
-
-const char *itemState(const OrderDetail &d)
-{
-    int full = d.prepTime * d.quantity;
-    if (d.remainingTime <= 0)
-        return "done";
-    if (d.remainingTime >= full)
-        return "Cho";
-    return "cook";
 }
 
 // ===== Add Order =====
@@ -161,7 +166,6 @@ void addOrder(Queue &q, int &idCounter)
 
     int tableNum = chooseTable();
     o.tableNumber = tableNum;
-    o.tableStatus = "Full";
     gTableStatus[o.tableNumber - 1] = "Full";
     gTableOwner[o.tableNumber - 1] = o.id;
 
@@ -249,13 +253,9 @@ void addOrder(Queue &q, int &idCounter)
 
         if (act == 1)
         {
-            Order rem;
-            if (removeOrderByID(q, f->id, rem))
-            {
-                cout << "Xoa.\n";
-            }
-            else cout << "Xoa that bai.\n";
-            break;
+            deleteOrder(q);
+            cin.ignore();
+            enter();
         }
         else if (act == 2)
         {
@@ -263,20 +263,9 @@ void addOrder(Queue &q, int &idCounter)
         }
         else if (act == 3)
         {
-            bool cookingExists = false;
-            for (int i = 0; i < q.count; i++)
-            {
-                int idx = (q.front + i) % MAX;
-                if (q.orders[idx].status == "Nau")
-                {
-                    cookingExists = true;
-                    break;
-                }
-            }
-            if (cookingExists)
-                f->status = "Cho";
-            else
-                f->status = "Nau";
+            // Dùng helper thay cho lặp lại
+            if (hasCooking(q)) f->status = "Cho";
+            else f->status = "Nau";
 
             printBill(*f);
             cout << "[Temp bill] -> " << f->status << " & progress logged.\n";
@@ -285,10 +274,8 @@ void addOrder(Queue &q, int &idCounter)
             getline(cin, _tmp);
             startTimer(&q);
         }
-        else if (act == 0)
-            break;
-        else
-            cout << "Invalid.\n";
+        else if (act == 0) break;
+        else cout << "Invalid.\n";
     }
 }
 
@@ -307,17 +294,11 @@ void displayQueue(Queue &q)
             for (int i = 0; i < q.count; i++)
             {
                 int idx = (q.front + i) % MAX;
-                Order &o = q.orders[idx];
-                cout << "OrderID: " << o.id
-                     << " | Name: " << o.customerName
-                     << " | Table: " << o.tableNumber
-                     << " | Status: " << o.status
-                     << " | Total: " << formatPrice(o.total)
-                     << " | Remain: " << o.totalRemainingTime << "s\n";
+                printOrderRow(q.orders[idx]); // dùng helper
             }
         }
 
-        cout << "Tuy chinh don: 1-Xoa  2-Sua  3-Xuat hoa don tam thoi (Nau)  0-Quay lai\nChon: ";
+        cout << "Tuy chinh don: 1-Xoa  2-Sua  3-Xuat hoa don tam thoi (Nau)  4.cap nhap lai  0-Quay lai\nChon: ";
         int act;
         if (!(cin >> act))
         {
@@ -331,7 +312,7 @@ void displayQueue(Queue &q)
         if (act == 1)
         {
             deleteOrder(q);
-            break;
+            enter();
         }
         else if (act == 2)
         {
@@ -350,20 +331,8 @@ void displayQueue(Queue &q)
             }
             else
             {
-                bool cookingExists = false;
-                for (int i = 0; i < q.count; i++)
-                {
-                    int idx = (q.front + i) % MAX;
-                    if (q.orders[idx].status == "Nau")
-                    {
-                        cookingExists = true;
-                        break;
-                    }
-                }
-                if (cookingExists)
-                    f->status = "Cho";
-                else
-                    f->status = "Nau";
+                if (hasCooking(q)) f->status = "Cho";
+                else f->status = "Nau";
 
                 printBill(*f);
                 cout << "[Temp bill] -> " << f->status << "\n";
@@ -378,10 +347,8 @@ void displayQueue(Queue &q)
             displayTables();
             continue;
         }
-        else if (act == 0)
-            break;
-        else
-            cout << "Invalid.\n";
+        else if (act == 0) break;
+        else cout << "Invalid.\n";
     }
 }
 
@@ -402,8 +369,7 @@ void editOrder(Queue &q)
     string name;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     getline(cin, name);
-    if (name != ".")
-        f->customerName = name;
+    if (name != ".") f->customerName = name;
 
     cout << "Change table? (y/n): ";
     char c;
@@ -526,6 +492,39 @@ void searchByTable(Queue &q, int tableNo)
             printBill(o);
         }
     }
-    if (!any)
-        cout << "No orders.\n";
+    if (!any) cout << "No orders.\n";
+}
+
+// ===== Search Customer (Naïve) =====
+void searchCustomer(Queue &q)
+{
+    if (q.count == 0)
+    {
+        cout << "Khong co don hang nao trong he thong.\n";
+        return;
+    }
+
+    string keyword;
+    cout << "Nhap ten khach hang can tim: ";
+    getline(cin, keyword);
+
+    if (keyword.empty())
+    {
+        cout << "Tu khoa trong. Khong tim thay.\n";
+        return;
+    }
+
+    bool found = false;
+    cout << "\nKet qua tim kiem:\n";
+    for (int i = 0; i < q.count; i++)
+    {
+        int idx = (q.front + i) % MAX;
+        Order &o = q.orders[idx];
+        if (containsNaive(o.customerName, keyword)) // hàm ở Menu.h
+        {
+            found = true;
+            printOrderRow(o);
+        }
+    }
+    if (!found) cout << "Khong tim thay khach hang nao phu hop.\n";
 }
