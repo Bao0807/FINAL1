@@ -1,7 +1,7 @@
 #pragma once
 #include "Order.h"
 
-const int MAX = 1;
+const int MAX = 100;
 
 struct Queue {
     Order orders[MAX];
