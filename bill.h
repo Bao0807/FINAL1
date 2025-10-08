@@ -15,10 +15,9 @@ bool removeOrderByID(Queue &q, int id, Order &out)
         return false;
     int foundIndex = -1;
     // tìm vị trí (offset i trong queue)
-    for (int i = 0; i < q.count; i++)
+    for (int i = 0; i <= q.right; i++)
     {
-        int idx = (q.front + i) % MAX;
-        if (q.orders[idx].id == id)
+        if (q.orders[i].id == id)
         {
             foundIndex = i;
             break;
@@ -28,19 +27,15 @@ bool removeOrderByID(Queue &q, int id, Order &out)
         return false;
 
     // sao chép order ra ngoài
-    int src = (q.front + foundIndex) % MAX;
-    out = q.orders[src];
+    out = q.orders[foundIndex];
 
     // dịch trái các phần tử sau foundIndex
-    for (int i = foundIndex; i < q.count - 1; i++)
+    for (int i = foundIndex; i < q.right; i++)
     {
-        int from = (q.front + i + 1) % MAX;
-        int to = (q.front + i) % MAX;
-        q.orders[to] = q.orders[from];
+        q.orders[i] = q.orders[i + 1];
     }
-    // cập nhật rear và count
-    q.rear = (q.rear - 1 + MAX) % MAX;
-    q.count--;
+    // cập nhật right
+    q.right--;
 
     // xóa mọi gTableOwner trùng order.id (nếu có merge)
     for (int t = 0; t < NUM_TABLES; t++)
@@ -149,10 +144,9 @@ void payment(Queue &q)
 
     // Tim don hang theo ban
     Order *target = nullptr;
-    for (int i = 0; i < q.count; i++)
+    for (int i = 0; i <= q.right; i++)
     {
-        int idx = (q.front + i) % MAX;
-        Order &o = q.orders[idx];
+        Order &o = q.orders[i];
         if (o.tableNumber == tableNo)
         {
             target = &o;

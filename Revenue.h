@@ -28,7 +28,7 @@ void viewRevenueSummary()
     struct C
     {
         string name;
-        int qty;
+        int qty = 0;
     } cnt[128];
     int cc = 0;
     for (int i = 0; i < 128; i++)

@@ -97,26 +97,35 @@ int chooseTable()
         // mỗi lần chọn bàn hiển thị trên màn hình sạch
         clearScreen();
         displayTables();
-        int t = 0;
-        cout << "Choose table (1-" << NUM_TABLES << "): ";
-        if (!(cin >> t))
-        {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid input.\n";
-            continue;
+        string tIn;
+        cout << "Chon so ban can dat mon (0 de quay lai), (1-" << NUM_TABLES << "): ";
+        cin >> tIn;
+        try {
+            int t = stoi(tIn);
+
+            if (t == 0) return t;
+
+            if (t < 1 || t > NUM_TABLES){
+                cout << "So ban khong hop le!\n";
+                cin.ignore();
+                cin.get();
+                continue;
+            }
+
+            if (gTableStatus[t - 1] == "Full")
+            {
+                cout << "Ban so " << t << " da day!\n";
+                cin.ignore();
+                cin.get();
+                continue;
+            }
+
+            return t;
+        } catch (const invalid_argument&) {
+            cout << "Input khong hop le! Vui long nhap so.\n";
+            cin.ignore();
+            cin.get();
         }
-        if (t < 1 || t > NUM_TABLES)
-        {
-            cout << "Out of range.\n";
-            continue;
-        }
-        if (gTableStatus[t - 1] == "Full")
-        {
-            cout << "Table is Full.\n";
-            continue;
-        }
-        return t;
     }
 }
 
@@ -128,10 +137,9 @@ bool anyOrderForTable(Queue &q, int tableNo)
     if (gTableOwner[tableNo - 1] != 0)
         return true;
 
-    for (int i = 0; i < q.count; i++)
+    for (int i = 0; i <= q.right; i++)
     {
-        int idx = (q.front + i) % MAX;
-        if (q.orders[idx].tableNumber == tableNo)
+        if (q.orders[i].tableNumber == tableNo)
             return true;
     }
     return false;

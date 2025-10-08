@@ -5,9 +5,9 @@ using namespace std;
 
 struct MenuItem {
     string foodName;
-    long long price; // VND
-    bool available;
-    int prepTime; // second for one portion
+    long long price = 0; // VND
+    bool available = true;
+    int prepTime = 0; // second for one portion
 };
 
 string formatPrice(long long price);
@@ -25,8 +25,7 @@ void searchFoodNaive();
 
 void enter(){
     cout << "\nPress Enter to continue...";
-    string _tmp;
-    getline(cin, _tmp);
+    cin.get();
 }
 
 MenuItem menuList[] = {
@@ -45,10 +44,12 @@ MenuItem menuList[] = {
 int menuSize = sizeof(menuList) / sizeof(menuList[0]);
 
 
-string formatPrice(long long price){ // edit
+string formatPrice(long long price) { // edit
     string Price = to_string(price);
-    for (int i = Price.length() - 3; i >= 1; i -= 3)
-        Price.insert(i, ".");
+    if (Price.length() >= 4) {  // Only insert if we have enough digits
+        for (size_t i = Price.length() - 3; i >= 1 && i < Price.length(); i -= 3)
+            Price.insert(i, ".");
+    }
     return Price;
 }
 

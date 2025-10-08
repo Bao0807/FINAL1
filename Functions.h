@@ -24,10 +24,9 @@ Queue *g_queuePtr = nullptr;
 // Có đơn đang "Nau" không?
 bool hasCooking(Queue &q)
 {
-    for (int i = 0; i < q.count; ++i)
+    for (int i = 0; i <= q.right; ++i)
     {
-        int idx = (q.front + i) % MAX;
-        if (q.orders[idx].status == "Nau") return true;
+        if (q.orders[i].status == "Nau") return true;
     }
     return false;
 }
@@ -85,16 +84,15 @@ void stopTimer()
 // ===== advanceTime =====
 void advanceTime(Queue &q, int seconds)
 {
-    if (seconds <= 0 || q.count == 0) return;
+    if (seconds <= 0 || isEmpty(q)) return;
 
     // tìm order đầu tiên đang Cooking
     int targetIdx = -1;
-    for (int i = 0; i < q.count; ++i)
+    for (int i = 0; i <= q.right; ++i)
     {
-        int idx = (q.front + i) % MAX;
-        if (q.orders[idx].status == "Nau")
+        if (q.orders[i].status == "Nau")
         {
-            targetIdx = idx;
+            targetIdx = i;
             break;
         }
     }
@@ -111,10 +109,9 @@ void advanceTime(Queue &q, int seconds)
     {
         o.status = "Ready";
         // Khi xong, tự động chuyển đơn "Cho" đầu tiên sang "Nau"
-        for (int j = 0; j < q.count; ++j)
+        for (int j = 0; j <= q.right; ++j)
         {
-            int idx2 = (q.front + j) % MAX;
-            Order &next = q.orders[idx2];
+            Order &next = q.orders[j];
             if (next.status == "Cho")
             {
                 next.status = "Nau";
@@ -146,10 +143,9 @@ int getLastOrderID()
 // ===== findOrderByID =====
 Order *findOrderByID(Queue &q, int id)
 {
-    for (int i = 0; i < q.count; i++)
+    for (int i = 0; i <= q.right; i++)
     {
-        int idx = (q.front + i) % MAX;
-        if (q.orders[idx].id == id) return &q.orders[idx];
+        if (q.orders[i].id == id) return &q.orders[i];
     }
     return nullptr;
 }
@@ -166,6 +162,8 @@ void addOrder(Queue &q, int &idCounter)
     getline(cin, o.customerName);
 
     int tableNum = chooseTable();
+    if (tableNum == 0) return;
+
     o.tableNumber = tableNum;
     gTableStatus[o.tableNumber - 1] = "Full";
     gTableOwner[o.tableNumber - 1] = o.id;
@@ -244,7 +242,7 @@ void addOrder(Queue &q, int &idCounter)
 
     if (choice == 'y' || choice == 'Y')
     {
-        Order *f = &q.orders[q.rear];
+        Order *f = &q.orders[q.right];
         if (hasCooking(q))
             f->status = "Cho";
         else
@@ -269,16 +267,15 @@ void displayQueue(Queue &q)
     while (true)
     {
         cout << "\n===== ORDERS IN QUEUE =====\n";
-        if (q.count == 0)
+        if (isEmpty(q))
         {
             cout << "No orders in queue.\n";
         }
         else
         {
-            for (int i = 0; i < q.count; i++)
+            for (int i = 0; i <= q.right; i++)
             {
-                int idx = (q.front + i) % MAX;
-                printOrderRow(q.orders[idx]); // dùng helper
+                printOrderRow(q.orders[i]); // dùng helper
             }
         }
 
@@ -368,10 +365,9 @@ void editOrder(Queue &q)
         gTableStatus[nt - 1] = "Full";
 
         bool hasOther = false;
-        for (int i = 0; i < q.count; i++)
+        for (int i = 0; i <= q.right; i++)
         {
-            int idx = (q.front + i) % MAX;
-            if (q.orders[idx].id != f->id && q.orders[idx].tableNumber == old)
+            if (q.orders[i].id != f->id && q.orders[i].tableNumber == old)
             { hasOther = true; break; }
         }
         if (!hasOther && old >= 1 && old <= NUM_TABLES)
@@ -486,10 +482,9 @@ void searchByTable(Queue &q, int tableNo)
 {
     cout << "\n-- Orders at Table " << tableNo << " --\n";
     bool any = false;
-    for (int i = 0; i < q.count; i++)
+    for (int i = 0; i <= q.right; i++)
     {
-        int idx = (q.front + i) % MAX;
-        const Order &o = q.orders[idx];
+        const Order &o = q.orders[i];
         if (o.tableNumber == tableNo)
         {
             any = true;
@@ -502,7 +497,7 @@ void searchByTable(Queue &q, int tableNo)
 // ===== Search Customer (Naïve) =====
 void searchCustomer(Queue &q)
 {
-    if (q.count == 0)
+    if (isEmpty(q))
     {
         cout << "Khong co don hang nao trong he thong.\n";
         return;
@@ -520,10 +515,9 @@ void searchCustomer(Queue &q)
 
     bool found = false;
     cout << "\nKet qua tim kiem:\n";
-    for (int i = 0; i < q.count; i++)
+    for (int i = 0; i <= q.right; i++)
     {
-        int idx = (q.front + i) % MAX;
-        Order &o = q.orders[idx];
+        Order &o = q.orders[i];
         if (containsNaive(o.customerName, keyword)) // hàm ở Menu.h
         {
             found = true;

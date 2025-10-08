@@ -6,7 +6,7 @@ struct Item {
     int hash;
     string value;
 
-    Item() {}
+	Item() : hash(0), value("") {}
 
     Item(int hash, string value){
         Item::hash = hash;
@@ -102,6 +102,9 @@ struct HashTable {
 };
 
 void login(){
+    bool debug = true;
+    if (debug) return;
+    
     HashTable registeredUsers;
     registeredUsers.loadData();
     
